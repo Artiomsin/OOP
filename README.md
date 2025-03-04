@@ -1,2 +1,1 @@
-# OOP
-Object-oriented programming
+## Sinyakov Artiom 353504
