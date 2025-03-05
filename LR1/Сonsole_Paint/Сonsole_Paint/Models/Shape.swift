@@ -1,8 +1,12 @@
-//
-//  Shape.swift
-//  Сonsole_Paint
-//
-//  Created by Artem on 5.03.25.
-//
-
-import Foundation
+// Протокол для фигур
+protocol Shape {
+    func draw(on canvas: inout Canvas)
+    func erase(on canvas: inout Canvas)
+    func move(by deltaX: Int, deltaY: Int)
+    func copy() -> Shape
+    var drawSymbol: Character { get set }
+    func fill(on canvas: inout Canvas)
+    var fillSymbol: Character? { get set }
+    
+    
+}
