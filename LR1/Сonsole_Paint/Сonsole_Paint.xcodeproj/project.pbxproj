@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		AC85750D2D78A5F100745189 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AC8574832D782CBC00745189 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AC85748A2D782CBC00745189;
+			remoteInfo = "Сonsole_Paint";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		AC8574892D782CBC00745189 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,18 +30,52 @@
 
 /* Begin PBXFileReference section */
 		AC85748B2D782CBC00745189 /* Сonsole_Paint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Сonsole_Paint"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC8575062D78A5B900745189 /* unitTestPaint.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = unitTestPaint.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AC8575102D78A60200745189 /* Exceptions for "Сonsole_Paint" folder in "unitTestPaint" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				main.swift,
+				Managers/DrawingManager.swift,
+				Managers/FileManager.swift,
+				Models/Canvas.swift,
+				Models/Circle.swift,
+				Models/Rectangle.swift,
+				Models/Shape.swift,
+				Models/Triangle.swift,
+				Utils/Utils.swift,
+			);
+			target = AC8575052D78A5B900745189 /* unitTestPaint */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AC85748D2D782CBC00745189 /* Сonsole_Paint */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AC8575102D78A60200745189 /* Exceptions for "Сonsole_Paint" folder in "unitTestPaint" target */,
+			);
 			path = "Сonsole_Paint";
+			sourceTree = "<group>";
+		};
+		AC8575072D78A5B900745189 /* unitTestPaint */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = unitTestPaint;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AC8574882D782CBC00745189 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AC8575032D78A5B900745189 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -45,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				AC85748D2D782CBC00745189 /* Сonsole_Paint */,
+				AC8575072D78A5B900745189 /* unitTestPaint */,
 				AC85748C2D782CBC00745189 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				AC85748B2D782CBC00745189 /* Сonsole_Paint */,
+				AC8575062D78A5B900745189 /* unitTestPaint.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +128,29 @@
 			productReference = AC85748B2D782CBC00745189 /* Сonsole_Paint */;
 			productType = "com.apple.product-type.tool";
 		};
+		AC8575052D78A5B900745189 /* unitTestPaint */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AC85750A2D78A5B900745189 /* Build configuration list for PBXNativeTarget "unitTestPaint" */;
+			buildPhases = (
+				AC8575022D78A5B900745189 /* Sources */,
+				AC8575032D78A5B900745189 /* Frameworks */,
+				AC8575042D78A5B900745189 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AC85750E2D78A5F100745189 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AC8575072D78A5B900745189 /* unitTestPaint */,
+			);
+			name = unitTestPaint;
+			packageProductDependencies = (
+			);
+			productName = unitTestPaint;
+			productReference = AC8575062D78A5B900745189 /* unitTestPaint.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -93,6 +162,9 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					AC85748A2D782CBC00745189 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					AC8575052D78A5B900745189 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -112,9 +184,20 @@
 			projectRoot = "";
 			targets = (
 				AC85748A2D782CBC00745189 /* Сonsole_Paint */,
+				AC8575052D78A5B900745189 /* unitTestPaint */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AC8575042D78A5B900745189 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AC8574872D782CBC00745189 /* Sources */ = {
@@ -124,7 +207,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AC8575022D78A5B900745189 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AC85750E2D78A5F100745189 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AC85748A2D782CBC00745189 /* Сonsole_Paint */;
+			targetProxy = AC85750D2D78A5F100745189 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AC8574902D782CBC00745189 /* Debug */ = {
@@ -267,6 +365,36 @@
 			};
 			name = Release;
 		};
+		AC85750B2D78A5B900745189 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QFS7488RTY;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = programing.unitTestPaint;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AC85750C2D78A5B900745189 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QFS7488RTY;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = programing.unitTestPaint;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -284,6 +412,15 @@
 			buildConfigurations = (
 				AC8574932D782CBC00745189 /* Debug */,
 				AC8574942D782CBC00745189 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AC85750A2D78A5B900745189 /* Build configuration list for PBXNativeTarget "unitTestPaint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC85750B2D78A5B900745189 /* Debug */,
+				AC85750C2D78A5B900745189 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
