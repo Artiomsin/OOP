@@ -1,82 +1,87 @@
-# Проект "Консольный Paint"
+# Project "Console Paint"
 
-## 1. Обзор системы
+## 1. System Overview
 
-Система представляет собой приложение для рисования на прямоугольном холсте с возможностью добавления и редактирования геометрических фигур (прямоугольников, треугольников, кругов). Приложение поддерживает сохранение и загрузку состояния холста в файл, а также позволяет пользователям отменять и повторять действия (например, добавление и удаление фигур).
+The system is an application for drawing on a rectangular canvas, with the ability to add and edit geometric shapes (rectangles, triangles, circles). The application supports saving and loading the canvas state to a file and allows users to undo and redo actions (e.g., adding and deleting shapes).
 
-Это консольное приложение написано на **Swift**.
+This console application is written in **Swift**.
 
-## 2. Операции пользователя
+## 2. User Operations
 
-### 2.1 Создание холста
-**Описание:** Холст — это основной объект, на котором рисуются фигуры. Он представляет собой двумерный массив символов, где каждый элемент хранит символ, соответствующий пикселю.
+### 2.1 Creating a Canvas
+**Description:** The canvas is the main object where shapes are drawn. It is a two-dimensional array of characters, where each element stores a character representing a pixel.
 
-**Реализация:**
-- Холст имеет размеры ширина x высота (параметры задаются при создании холста).
-- Пиксели холста могут быть либо пустыми, либо содержать символы (например, "#").
-- Внешняя рамка холста всегда рисуется символами "#", а внутренняя часть остаётся пустой (для рисования фигур).
+**Implementation:**
+- The canvas has dimensions of width x height (parameters are set when creating the canvas).
+- Canvas pixels can be either empty or contain characters (e.g., "#").
+- The outer frame of the canvas is always drawn with "#" characters, while the inner part remains empty (space for drawing shapes).
 
-### 2.2 Добавление фигуры
-**Описание:** Пользователь может добавлять геометрические фигуры (прямоугольники, треугольники, круги) на холст.
+### 2.2 Adding a Shape
+**Description:** The user can add geometric shapes (rectangles, triangles, circles) to the canvas.
 
-**Реализация:**
-- **Прямоугольник:** Чтобы добавить прямоугольник, пользователь задаёт координаты верхнего левого угла, ширину и высоту. Фигура рисуется в пределах границ холста.
-- **Треугольник:** Для добавления треугольника пользователь указывает координаты трёх вершин, которые должны находиться внутри границ холста.
-- **Круг:** Чтобы добавить круг, пользователь задаёт координаты центра и радиус.
+**Implementation:**
+- **Rectangle:** To add a rectangle, the user specifies the coordinates of the top-left corner, width, and height. The shape is drawn within the canvas boundaries.
+- **Triangle:** To add a triangle, the user provides the coordinates of the three vertices, which must be inside the canvas boundaries.
+- **Circle:** To add a circle, the user specifies the coordinates of the center and the radius.
 
-Все фигуры проверяются на попадание в пределы холста. Если фигура выходит за пределы, она не добавляется.
+All shapes are checked to ensure they fit within the canvas. If the shape exceeds the boundaries, it is not added.
 
-### 2.3 Перемещение фигуры
-**Описание:** Пользователь может перемещать фигуру по холсту.
+### 2.3 Moving a Shape
+**Description:** The user can move a shape on the canvas.
 
-**Реализация:**
-- Фигуру можно переместить на заданное количество пикселей по осям X и Y.
-- При перемещении проверяется, что фигура остаётся внутри границ холста. Если фигура выходит за пределы, перемещение отклоняется.
+**Implementation:**
+- A shape can be moved by a specified number of pixels along the X and Y axes.
+- When moving a shape, the system checks that the shape remains within the canvas boundaries. If the shape exceeds the boundaries, the move is rejected.
 
-### 2.4 Удаление фигуры
-**Описание:** Пользователь может удалить любую фигуру с холста.
+### 2.4 Deleting a Shape
+**Description:** The user can delete any shape from the canvas.
 
-**Реализация:**
-- Удаление фигуры происходит по индексу. При удалении фигура стирается с холста, а список фигур обновляется.
+**Implementation:**
+- A shape is deleted by its index. When deleted, the shape is erased from the canvas, and the list of shapes is updated.
 
-### 2.5 Отмена и повтор действия
-**Описание:** Пользователь может отменять и повторять свои действия (добавление, удаление и перемещение фигур).
+### 2.5 Undo and Redo Actions
+**Description:** The user can undo and redo their actions (adding, deleting, and moving shapes).
 
-**Реализация:**
-- Система поддерживает два стека:
-  - **Стек Undo** — для отмены действий.
-  - **Стек Redo** — для повторного выполнения отменённых действий.
-- Каждое изменение состояния (например, добавление или удаление фигуры) сохраняется в стек.
-- Пользователь может отменить последнее действие, восстановив холст в предыдущем состоянии.
-- Пользователь может повторить отменённое действие.
+**Implementation:**
+- The system supports two stacks:
+  - **Undo Stack** — for undoing actions.
+  - **Redo Stack** — for redoing undone actions.
+- Every state change (e.g., adding or deleting a shape) is saved to the stack.
+- The user can undo the last action, restoring the canvas to its previous state.
+- The user can redo an undone action.
 
-### 2.6 Сохранение и загрузка состояния холста
-**Описание:** Пользователь может сохранять состояние холста в файл и загружать его из файла.
+### 2.6 Saving and Loading Canvas State
+**Description:** The user can save the canvas state to a file and load it from a file.
 
-**Реализация:**
-- **Сохранение:** При сохранении пользователь вводит путь и имя файла. Состояние холста (все фигуры и их расположение) сохраняется в текстовый файл.
-- **Загрузка:** При загрузке пользователь вводит путь и имя файла. Фигуры, сохранённые в файле, загружаются на холст в том же виде, в котором они были сохранены.
+**Implementation:**
+- **Saving:** When saving, the user specifies the path and file name. The canvas state (all shapes and their positions) is saved to a text file.
+- **Loading:** When loading, the user specifies the path and file name. The shapes saved in the file are loaded back onto the canvas in the exact same form they were saved.
 
-Каждая фигура сохраняется как строка данных, которая описывает её параметры (например, координаты для прямоугольников, треугольников и кругов).
+Each shape is saved as a string of data describing its parameters (e.g., coordinates for rectangles, triangles, and circles).
 
-Сохранение и загрузка поддерживают только текстовые файлы с расширением `.txt`.
+Saving and loading only support text files with the `.txt` extension.
 
-### 2.7 Отображение холста
-**Описание:** Холст должен отображаться в текстовом виде в консоли.
+### 2.7 Displaying the Canvas
+**Description:** The canvas must be displayed in text form in the console.
 
-**Реализация:**
-- Холст отображается как двумерный массив символов, где каждый символ представляет собой пиксель.
-- Внешняя рамка всегда отображается символами "#", а внутренность холста — пробелами или символами, представляющими фигуры.
+**Implementation:**
+- The canvas is displayed as a two-dimensional array of characters, where each character represents a pixel.
+- The outer frame is always displayed with the "#" symbol, and the interior of the canvas is filled with spaces or symbols representing shapes.
 
-## 3. Требования к интерфейсу
+## 3. Interface Requirements
 
-### 3.1 Ввод данных пользователем
-Пользователь вводит команды через стандартный консольный ввод:
-- Для добавления фигуры пользователь вводит координаты и размеры.
-- Для перемещения фигуры пользователь изменяет её координаты.
-- Для сохранения и загрузки пользователь вводит путь к файлу и его имя.
+### 3.1 User Input
+The user enters commands through the standard console input:
+- To add a shape, the user inputs coordinates and dimensions.
+- To move a shape, the user modifies the coordinates.
+- To save and load, the user specifies the file path and name.
 
-### 3.2 Отображение сообщений
-Сообщения должны отображать текущий статус (например, "Фигура добавлена", "Перемещение невозможно", "Холст сохранён", "Ошибка при загрузке").
+### 3.2 Message Display
+Messages should reflect the current status (e.g., "Shape added", "Move not possible", "Canvas saved", "Load error").
 
-Если действие не удаётся выполнить (например, фигура выходит за пределы холста), отображается соответствующее сообщение об ошибке.
+If an action cannot be performed (e.g., a shape exceeds the canvas boundaries), a corresponding error message should be displayed.
+
+## 4. UML Diagramm
+On the picture bellow you can see UML Diagramm of all classes used in programm.
+<img width="418" alt="Снимок экрана 2025-03-05 в 19 38 11" src="https://github.com/user-attachments/assets/05ddebc6-12fc-42e4-98b7-9d2c41109f47" />
+
