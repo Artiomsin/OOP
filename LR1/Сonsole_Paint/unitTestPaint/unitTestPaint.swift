@@ -1,10 +1,3 @@
-//
-//  unitTestPaint.swift
-//  unitTestPaint
-//
-//  Created by Artem on 5.03.25.
-//
-
 import XCTest
 @testable import Сonsole_Paint
 
@@ -74,4 +67,71 @@ final class unitTestPaint: XCTestCase {
         // Проверяем, что фигура выходит за пределы холста
         XCTAssertFalse(manager.isShapeWithinBounds(shape), "Shape should be out of bounds.")
     }
+    // Тестируем сохранение состояния перед добавлением новой фигуры
+    func testSaveStateForUndoBeforeAddingShape() {
+        let shape = Rectangle(x: 1, y: 1, width: 3, height: 3, drawSymbol: "#", fillSymbol: " ")
+        
+        // Сохраняем состояние перед добавлением фигуры
+        manager.saveStateForUndo()
+        manager.addShape(shape)
+        
+        // Проверяем, что состояние сохранено
+        XCTAssertTrue(manager.undoStack.count > 0, "Undo stack should have one state saved.")
+    }
+    
+    // Тестируем очистку холста
+    func testClearCanvas() {
+        let shape = Rectangle(x: 1, y: 1, width: 3, height: 3, drawSymbol: "#", fillSymbol: " ")
+        manager.addShape(shape)
+        
+        // Очистка холста
+        manager.clearCanvas()
+        XCTAssertEqual(manager.shapes.count, 0, "Canvas should be empty after clear.")
+    }
+    
+    // Тестируем отмену действия
+    func testUndo() {
+        let shape = Rectangle(x: 1, y: 1, width: 3, height: 3, drawSymbol: "#", fillSymbol: " ")
+        manager.addShape(shape)
+        
+        // Сохраняем состояние
+        manager.saveStateForUndo()
+        
+        // Добавляем еще одну фигуру
+        let anotherShape = Circle(x: 5, y: 5, radius: 2, drawSymbol: "@", fillSymbol: " ")
+        manager.addShape(anotherShape)
+        
+        // Проверяем, что две фигуры на холсте
+        XCTAssertEqual(manager.shapes.count, 2, "There should be two shapes.")
+        
+        // Отменяем последнее действие
+        manager.undo()
+        XCTAssertEqual(manager.shapes.count, 1, "After undo, only one shape should remain.")
+    }
+    
+    func testRedo() {
+        let shape = Rectangle(x: 1, y: 1, width: 3, height: 3, drawSymbol: "#", fillSymbol: " ")
+        manager.addShape(shape)
+        
+        // Сохраняем состояние
+        manager.saveStateForUndo()
+        
+        // Добавляем еще одну фигуру
+        let anotherShape = Circle(x: 5, y: 5, radius: 2, drawSymbol: "@", fillSymbol: " ")
+        manager.addShape(anotherShape)
+        
+        // Отменяем последнее действие
+        manager.undo()
+        
+        // Проверяем, что одна фигура на холсте
+        XCTAssertEqual(manager.shapes.count, 1, "After undo, there should be one shape.")
+        
+        // Повторяем отменённое действие
+        manager.redo()
+        XCTAssertEqual(manager.shapes.count, 2, "After redo, there should be two shapes.")
+    }
+    
+    
+    
+    
 }
