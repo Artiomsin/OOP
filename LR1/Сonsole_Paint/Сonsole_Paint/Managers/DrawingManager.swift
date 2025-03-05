@@ -10,4 +10,51 @@ class DrawingManager {
         self.canvas = canvas
     }
     
+    // Сохранение состояния в стек Undo
+    func saveStateForUndo() {
+        
+    }
+    
+    // Отмена последнего действия
+    func undo() {
+        
+    }
+    
+    // Повтор последнего отменённого действия
+    func redo() {
+        
+    }
+    
+    func addShape(_ shape: Shape) {
+        
+    }
+    
+    func removeShape(at index: Int) {
+        
+    }
+    
+    func isShapeWithinBounds(_ shape: Shape) -> Bool {
+        return true
+    }
+    
+    func clearCanvas() {
+        
+    }
+    
+    func restoreBorder() {
+        
+    }
+    
+    func render() {
+        
+    }
+    
+    func moveShape(at index: Int, deltaX: Int, deltaY: Int) {
+        
+    }
+    
+    func redrawAllShapes() {
+        
+    }
+    
 }
