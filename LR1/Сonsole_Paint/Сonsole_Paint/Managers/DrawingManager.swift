@@ -3,21 +3,21 @@ import Foundation
 class DrawingManager {
     var canvas: Canvas
     var shapes: [Shape] = []
-    var undoStack: [[Shape]] = []  // Стек для отмены
-    var redoStack: [[Shape]] = []  // Стек для повтора
-    
+    var undoStack: [[Shape]] = []
+    var redoStack: [[Shape]] = []
+
     init(canvas: Canvas) {
         self.canvas = canvas
     }
-    
+
     // Сохранение состояния в стек Undo
     func saveStateForUndo() {
         let currentState = shapes.map { $0.copy() }
         undoStack.append(currentState)
-        redoStack.removeAll()  // После сохранения в Undo, Redo очищается
+        redoStack.removeAll()
     }
-    
-    // Отмена последнего действия
+
+    // Отмена действия
     func undo() {
         guard let lastState = undoStack.popLast() else {
             print("Нет состояния для отмены.")
@@ -27,8 +27,8 @@ class DrawingManager {
         shapes = lastState
         redrawAllShapes()
     }
-    
-    // Повтор последнего отменённого действия
+
+    // Повтор действия
     func redo() {
         guard let lastState = redoStack.popLast() else {
             print("Нет состояния для повтора.")
@@ -38,124 +38,106 @@ class DrawingManager {
         shapes = lastState
         redrawAllShapes()
     }
-    
+
+    // Добавление фигуры
     func addShape(_ shape: Shape) {
-        // Проверка, не выходит ли фигура за пределы холста
         if !isShapeWithinBounds(shape) {
-            print("Фигура выходит за пределы холста. Пожалуйста, введите корректные данные.")
+            print("Фигура выходит за пределы холста. Введите корректные данные.")
             return
         }
         saveStateForUndo()
         shapes.append(shape)
-        shape.draw(on: &canvas)
         redrawAllShapes()
     }
-    
+
+    // Удаление фигуры по индексу
     func removeShape(at index: Int) {
-        if index >= 0 && index < shapes.count {
-            saveStateForUndo()
-            shapes[index].erase(on: &canvas)
-            shapes.remove(at: index)
-            restoreBorder()
-            redrawAllShapes()
-        } else {
+        guard index >= 0, index < shapes.count else {
             print("Неверный индекс фигуры.")
-            return // Не перерисовываем холст при неверном индексе
+            return
         }
-        
+        saveStateForUndo()
+        shapes.remove(at: index)
+        redrawAllShapes()
     }
-    
-    func isShapeWithinBounds(_ shape: Shape) -> Bool {
-        if let rectangle = shape as? Rectangle {
-            // Проверяем, не выходит ли прямоугольник за пределы холста
-            return rectangle.x >= 0 && rectangle.y >= 0 &&
-            rectangle.x + rectangle.width <= canvas.width && rectangle.y + rectangle.height <= canvas.height
-        }
-        
-        if let triangle = shape as? Triangle {
-            // Проверяем, не выходят ли вершины треугольника за пределы холста
-            return triangle.x1 >= 0 && triangle.y1 >= 0 &&
-            triangle.x2 >= 0 && triangle.y2 >= 0 &&
-            triangle.x3 >= 0 && triangle.y3 >= 0 &&
-            triangle.x1 < canvas.width && triangle.x2 < canvas.width && triangle.x3 < canvas.width &&
-            triangle.y1 < canvas.height && triangle.y2 < canvas.height && triangle.y3 < canvas.height
-        }
-        
-        if let circle = shape as? Circle {
-            // Проверяем, не выходит ли круг за пределы холста
-            return circle.x - circle.radius >= 0 && circle.y - circle.radius >= 0 &&
-            circle.x + circle.radius < canvas.width && circle.y + circle.radius < canvas.height
-        }
-        
-        return true
-    }
-    
+
+    // Очистка холста
     func clearCanvas() {
         saveStateForUndo()
-        // Удаляем все фигуры
         shapes.removeAll()
-        
-        // Перерисовываем холст с рамкой
         canvas.clear()
         restoreBorder()
     }
-    
+
+    // Перемещение фигуры
+    func moveShape(at index: Int, deltaX: Int, deltaY: Int) {
+        guard index >= 0, index < shapes.count else {
+            print("Неверный индекс фигуры.")
+            return
+        }
+
+        saveStateForUndo()
+        let shape = shapes[index]
+
+        let newShape = shape.copy()
+        newShape.move(by: deltaX, deltaY: deltaY)
+
+        if isShapeWithinBounds(newShape) {
+            shape.move(by: deltaX, deltaY: deltaY)
+            redrawAllShapes()
+        } else {
+            print("Перемещение невозможно: фигура выходит за границы холста.")
+        }
+    }
+
+    // Проверка выхода фигуры за границы холста
+    func isShapeWithinBounds(_ shape: Shape) -> Bool {
+        let pixels = shape.calculatePixelsToDraw() + shape.calculatePixelsToFill()
+        return pixels.allSatisfy { (x, y) in
+            x >= 0 && x < canvas.width && y >= 0 && y < canvas.height
+        }
+    }
+
+    // Восстановление рамки
     func restoreBorder() {
-        // Восстанавливаем рамку после любых изменений на холсте
         for y in 0..<canvas.height {
             for x in 0..<canvas.width {
                 if x == 0 || x == canvas.width - 1 || y == 0 || y == canvas.height - 1 {
-                    canvas.pixels[y][x] = "#"  // Рамка
+                    canvas.pixels[canvas.height - 1 - y][x] = "#"
                 }
             }
         }
     }
-    
+
+    // Перерисовка всех фигур
+    func redrawAllShapes() {
+        canvas.clear()
+        for shape in shapes {
+            drawShape(shape)
+        }
+        restoreBorder()
+    }
+
+    // Отрисовка фигуры на холсте
+    func drawShape(_ shape: Shape) {
+        for (x, y) in shape.calculatePixelsToDraw() {
+            if x >= 0, x < canvas.width, y >= 0, y < canvas.height {
+                canvas.pixels[canvas.height - 1 - y][x] = shape.drawSymbol
+            }
+        }
+        if let fillSymbol = shape.fillSymbol {
+            for (x, y) in shape.calculatePixelsToFill() {
+                if x >= 0, x < canvas.width, y >= 0, y < canvas.height {
+                    canvas.pixels[canvas.height - 1 - y][x] = fillSymbol
+                }
+            }
+        }
+    }
+
+    // Вывод холста
     func render() {
         canvas.render()
     }
-    
-    func moveShape(at index: Int, deltaX: Int, deltaY: Int) {
-        if index >= 0 && index < shapes.count {
-            saveStateForUndo()
-            let shape = shapes[index]
-            
-            // Сначала удаляем фигуру с её старой позиции
-            shape.erase(on: &canvas)
-            
-            // Создаем копию фигуры, чтобы проверить, не выйдет ли она за пределы холста после перемещения
-            let newShape = shape.copy()
-            newShape.move(by: deltaX, deltaY: deltaY)
-            
-            // Проверяем, остается ли фигура в пределах холста после перемещения
-            if isShapeWithinBounds(newShape) {
-                // Перемещаем фигуру
-                shape.move(by: deltaX, deltaY: deltaY)
-                
-                // Перерисовываем все фигуры, включая перемещенную
-                redrawAllShapes()
-                
-            } else {
-                // Если перемещение невозможно, восстанавливаем исходное положение
-                redrawAllShapes()
-                print("Перемещение невозможно: фигура выходит за границы холста.")
-            }
-        } else {
-            print("Неверный индекс фигуры.")
-        }
-    }
-    
-    func redrawAllShapes() {
-        // Убираем все фигуры с холста
-        canvas.clear()
-        
-        // Перерисовываем все фигуры
-        for shape in shapes {
-            shape.draw(on: &canvas)
-            shape.fill(on: &canvas)
-        }
-        
-        restoreBorder() // Восстанавливаем рамку после изменений
-    }
-    
 }
+
+
