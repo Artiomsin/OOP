@@ -1,12 +1,13 @@
 // Протокол для фигур
-protocol Shape {
-    func draw(on canvas: inout Canvas)
-    func erase(on canvas: inout Canvas)
+protocol Shape: AnyObject {
+    var drawSymbol: Character { get }
+    var fillSymbol: Character? { get }
+    
     func move(by deltaX: Int, deltaY: Int)
     func copy() -> Shape
-    var drawSymbol: Character { get set }
-    func fill(on canvas: inout Canvas)
-    var fillSymbol: Character? { get set }
-    
-    
+    func calculatePixelsToDraw() -> [(Int, Int)]
+    func calculatePixelsToFill() -> [(Int, Int)]
+    func calculatePixelsForErase() -> [(Int, Int)]
 }
+
+
