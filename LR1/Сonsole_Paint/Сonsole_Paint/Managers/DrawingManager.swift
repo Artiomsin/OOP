@@ -43,6 +43,7 @@ class DrawingManager {
     func addShape(_ shape: Shape) {
         if !isShapeWithinBounds(shape) {
             print("Фигура выходит за пределы холста. Введите корректные данные.")
+            redrawAllShapes()
             return
         }
         saveStateForUndo()
