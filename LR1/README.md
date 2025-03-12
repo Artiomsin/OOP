@@ -83,5 +83,5 @@ If an action cannot be performed (e.g., a shape exceeds the canvas boundaries), 
 
 ## 4. UML Diagramm
 On the picture bellow you can see UML Diagramm of all classes used in programm.
-<img width="418" alt="Снимок экрана 2025-03-05 в 19 38 11" src="https://github.com/user-attachments/assets/05ddebc6-12fc-42e4-98b7-9d2c41109f47" />
+<img width="419" alt="image" src="https://github.com/user-attachments/assets/555c1147-46cf-4bf1-82cc-36ea5c8a3cd0" />
 
