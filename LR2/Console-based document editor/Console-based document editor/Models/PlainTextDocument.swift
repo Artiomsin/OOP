@@ -1,8 +1,8 @@
-//
-//  PlainTextDocument.swift
-//  Console-based document editor
-//
-//  Created by Artem on 22.03.25.
-//
-
 import Foundation
+
+class PlainTextDocument: Document {
+    override var fileExtension: String {
+        return "txt" // Переопределение для PlainText документов
+    }
+}
+

@@ -1,8 +1,8 @@
-//
-//  RichTextDocument.swift
-//  Console-based document editor
-//
-//  Created by Artem on 22.03.25.
-//
-
 import Foundation
+
+class RichTextDocument: Document {
+    override var fileExtension: String {
+        return "rtf" // Переопределение для RichText документов
+    }
+}
+

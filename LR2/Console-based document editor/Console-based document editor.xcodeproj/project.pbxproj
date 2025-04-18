@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXCopyFilesBuildPhase section */
-		ACCEB1172D886BAA0089BA7A /* CopyFiles */ = {
+		ACB12B262D9023C6000A9639 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -19,11 +19,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		ACCEB1192D886BAA0089BA7A /* Console-based document editor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Console-based document editor"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACB12B282D9023C6000A9639 /* Console-based document editor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Console-based document editor"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		ACCEB11B2D886BAA0089BA7A /* Console-based document editor */ = {
+		ACB12B2A2D9023C6000A9639 /* Console-based document editor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Console-based document editor";
 			sourceTree = "<group>";
@@ -31,7 +31,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		ACCEB1162D886BAA0089BA7A /* Frameworks */ = {
+		ACB12B252D9023C6000A9639 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -41,18 +41,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		ACCEB1102D886BAA0089BA7A = {
+		ACB12B1F2D9023C6000A9639 = {
 			isa = PBXGroup;
 			children = (
-				ACCEB11B2D886BAA0089BA7A /* Console-based document editor */,
-				ACCEB11A2D886BAA0089BA7A /* Products */,
+				ACB12B2A2D9023C6000A9639 /* Console-based document editor */,
+				ACB12B292D9023C6000A9639 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		ACCEB11A2D886BAA0089BA7A /* Products */ = {
+		ACB12B292D9023C6000A9639 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ACCEB1192D886BAA0089BA7A /* Console-based document editor */,
+				ACB12B282D9023C6000A9639 /* Console-based document editor */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -60,64 +60,66 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		ACCEB1182D886BAA0089BA7A /* Console-based document editor */ = {
+		ACB12B272D9023C6000A9639 /* Console-based document editor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = ACCEB1202D886BAA0089BA7A /* Build configuration list for PBXNativeTarget "Console-based document editor" */;
+			buildConfigurationList = ACB12B2F2D9023C6000A9639 /* Build configuration list for PBXNativeTarget "Console-based document editor" */;
 			buildPhases = (
-				ACCEB1152D886BAA0089BA7A /* Sources */,
-				ACCEB1162D886BAA0089BA7A /* Frameworks */,
-				ACCEB1172D886BAA0089BA7A /* CopyFiles */,
+				ACB12B242D9023C6000A9639 /* Sources */,
+				ACB12B252D9023C6000A9639 /* Frameworks */,
+				ACB12B262D9023C6000A9639 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				ACCEB11B2D886BAA0089BA7A /* Console-based document editor */,
+				ACB12B2A2D9023C6000A9639 /* Console-based document editor */,
 			);
 			name = "Console-based document editor";
 			packageProductDependencies = (
 			);
 			productName = "Console-based document editor";
-			productReference = ACCEB1192D886BAA0089BA7A /* Console-based document editor */;
+			productReference = ACB12B282D9023C6000A9639 /* Console-based document editor */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		ACCEB1112D886BAA0089BA7A /* Project object */ = {
+		ACB12B202D9023C6000A9639 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					ACCEB1182D886BAA0089BA7A = {
+					ACB12B272D9023C6000A9639 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
-			buildConfigurationList = ACCEB1142D886BAA0089BA7A /* Build configuration list for PBXProject "Console-based document editor" */;
+			buildConfigurationList = ACB12B232D9023C6000A9639 /* Build configuration list for PBXProject "Console-based document editor" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = ACCEB1102D886BAA0089BA7A;
+			mainGroup = ACB12B1F2D9023C6000A9639;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = ACCEB11A2D886BAA0089BA7A /* Products */;
+			productRefGroup = ACB12B292D9023C6000A9639 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				ACCEB1182D886BAA0089BA7A /* Console-based document editor */,
+				ACB12B272D9023C6000A9639 /* Console-based document editor */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		ACCEB1152D886BAA0089BA7A /* Sources */ = {
+		ACB12B242D9023C6000A9639 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -127,7 +129,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		ACCEB11E2D886BAA0089BA7A /* Debug */ = {
+		ACB12B2D2D9023C6000A9639 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -190,7 +192,7 @@
 			};
 			name = Debug;
 		};
-		ACCEB11F2D886BAA0089BA7A /* Release */ = {
+		ACB12B2E2D9023C6000A9639 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -245,7 +247,7 @@
 			};
 			name = Release;
 		};
-		ACCEB1212D886BAA0089BA7A /* Debug */ = {
+		ACB12B302D9023C6000A9639 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -256,7 +258,7 @@
 			};
 			name = Debug;
 		};
-		ACCEB1222D886BAA0089BA7A /* Release */ = {
+		ACB12B312D9023C6000A9639 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -270,25 +272,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		ACCEB1142D886BAA0089BA7A /* Build configuration list for PBXProject "Console-based document editor" */ = {
+		ACB12B232D9023C6000A9639 /* Build configuration list for PBXProject "Console-based document editor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ACCEB11E2D886BAA0089BA7A /* Debug */,
-				ACCEB11F2D886BAA0089BA7A /* Release */,
+				ACB12B2D2D9023C6000A9639 /* Debug */,
+				ACB12B2E2D9023C6000A9639 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ACCEB1202D886BAA0089BA7A /* Build configuration list for PBXNativeTarget "Console-based document editor" */ = {
+		ACB12B2F2D9023C6000A9639 /* Build configuration list for PBXNativeTarget "Console-based document editor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ACCEB1212D886BAA0089BA7A /* Debug */,
-				ACCEB1222D886BAA0089BA7A /* Release */,
+				ACB12B302D9023C6000A9639 /* Debug */,
+				ACB12B312D9023C6000A9639 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = ACCEB1112D886BAA0089BA7A /* Project object */;
+	rootObject = ACB12B202D9023C6000A9639 /* Project object */;
 }
