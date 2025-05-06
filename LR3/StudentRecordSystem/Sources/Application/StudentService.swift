@@ -1,8 +1,14 @@
 import Foundation
 
 class StudentService {
-    private let repository = StudentRepository()
-    private let quoteService = QuoteService()
+    private let repository: StudentRepository
+        private let quoteService: QuoteService
+
+        init(repository: StudentRepository = StudentRepository(),
+             quoteService: QuoteService = QuoteService()) {
+            self.repository = repository
+            self.quoteService = quoteService
+        }
     
     func addStudent(name: String, age: Int, grade: Int, completion: @escaping (Result<Quote?, Error>) -> Void) {
         do {
