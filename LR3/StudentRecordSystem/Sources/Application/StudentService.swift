@@ -1,50 +1,32 @@
 import Foundation
 
-class StudentService: @unchecked Sendable  {
+class StudentService {
     private let repository = StudentRepository()
     private let quoteService = QuoteService()
     
-    func addStudent(name: String, age: Int, grade: Int, completion: @Sendable @escaping (Result<Quote?, Error>) -> Void) {
+    func addStudent(name: String, age: Int, grade: Int, completion: @escaping (Result<Quote?, Error>) -> Void) {
         do {
             var students = try repository.loadStudents()
             let newStudent = try Student(name: name, age: age, grade: grade)
             students.append(newStudent)
             try repository.saveStudents(students)
-
-            // Избегаем захвата `self` напрямую
+            
             quoteService.getRandomQuote { [weak self] quote in
-                // Безопасно извлекаем `self`
-                guard let self = self else {
-                    DispatchQueue.main.async {
-                        completion(.success(nil))
-                    }
-                    return
-                }
-
                 if let quote = quote {
                     do {
-                        try self.addQuoteToStudent(studentId: newStudent.id, quote: quote)
-                        DispatchQueue.main.async {
-                            completion(.success(quote))
-                        }
+                        try self?.addQuoteToStudent(studentId: newStudent.id, quote: quote)
+                        completion(.success(quote))
                     } catch {
-                        DispatchQueue.main.async {
-                            completion(.failure(error))
-                        }
+                        completion(.failure(error))
                     }
                 } else {
-                    DispatchQueue.main.async {
-                        completion(.success(nil))
-                    }
+                    completion(.success(nil))
                 }
             }
         } catch {
-            DispatchQueue.main.async {
-                completion(.failure(error))
-            }
+            completion(.failure(error))
         }
     }
-
     
     func editStudent(id: UUID, name: String, age: Int, grade: Int) throws {
         var students = try repository.loadStudents()

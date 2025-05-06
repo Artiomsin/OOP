@@ -2,32 +2,44 @@ import Foundation
 
 class AddCommand: Command {
     private let service: StudentService
-    
+
     init(service: StudentService) {
         self.service = service
     }
-    
+
     func execute() {
         print("\nДобавление нового студента")
-        print("Введите имя:")
-        guard let name = readLine(), !name.isEmpty else {
-            print("Имя не может быть пустым")
-            return
-        }
-        
-        print("Введите возраст:")
-        guard let ageStr = readLine(), let age = Int(ageStr), age >= 0 else {
-            print("Некорректный возраст")
-            return
-        }
-        
-        print("Введите оценку:")
-        guard let gradeStr = readLine(), let grade = Int(gradeStr), grade >= 0 else {
-            print("Некорректная оценка")
-            return
-        }
-        
-        service.addStudent(name: name, age: age, grade: grade) { result in
+
+        var name: String = ""
+        repeat {
+            print("Введите имя:")
+            name = readLine() ?? ""
+            if name.isEmpty {
+                print("Имя не может быть пустым.")
+            }
+        } while name.isEmpty
+
+        var age: Int?
+        repeat {
+            print("Введите возраст:")
+            if let ageStr = readLine(), let parsedAge = Int(ageStr), parsedAge >= 0 {
+                age = parsedAge
+            } else {
+                print("Некорректный возраст. Введите целое число больше или равно 0.")
+            }
+        } while age == nil
+
+        var grade: Int?
+        repeat {
+            print("Введите оценку (0–100):")
+            if let gradeStr = readLine(), let parsedGrade = Int(gradeStr), (0...100).contains(parsedGrade) {
+                grade = parsedGrade
+            } else {
+                print("Оценка должна быть числом от 0 до 100.")
+            }
+        } while grade == nil
+
+        service.addStudent(name: name, age: age!, grade: grade!) { result in
             switch result {
             case .success(let quote):
                 print("\nСтудент успешно добавлен!")

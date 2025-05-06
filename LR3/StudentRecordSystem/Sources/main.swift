@@ -1,3 +1,4 @@
 import Foundation
 
-print("Hello world")
+let cli = CLI()
+cli.start()
