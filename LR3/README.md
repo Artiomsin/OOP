@@ -47,3 +47,4 @@ Empty name, negative age or grade → error message is shown → user re-enters 
 **Expected:**  
 After adding a student, the application makes a request to the API → quote is displayed in the console.
 
+![UML-диграмма](https://github.com/user-attachments/assets/6632b5c7-cac6-4c86-91d9-bfdf8ef1eec7)
