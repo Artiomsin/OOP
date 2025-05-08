@@ -32,9 +32,6 @@ class FirebaseService {
         }
     }
 
-
-
-    
     // Функция для получения списка файлов для пользователя
     func listDocuments(userID: String, completion: @escaping ([String]?, Error?) -> Void) {
         db.collection("users").document(userID).collection("files").getDocuments { snapshot, error in

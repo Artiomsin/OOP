@@ -2,56 +2,75 @@ import Foundation
 
 class CLIHandler {
     var editor: TerminalEditor
-    var cursorPosition: (row: Int, col: Int) = (0, 0)  // Начальная позиция курсора
-    var isInInsertMode = false  // Для проверки, находимся ли мы в режиме ввода текста
+    var cursorPosition: (row: Int, col: Int) = (0, 0)
+    var isInInsertMode = false
     var isInSelectionMode = false
     var selectionStart: (row: Int, col: Int)?
     var clipboard: String = ""
     let undoRedoManager = UndoRedoManager()
+    var fileAccessControl = FileAccessControl()
+    var isClipboardCut = false
+    var currentUser: User? {
+        return userManager.currentUser
+    }
+
+    lazy var userManager = UserManager(cliHandler: self)
+    lazy var filePermissionManager = FilePermissionManager(cliHandler: self, editor: editor)
+    
     init(editor: TerminalEditor) {
         self.editor = editor
-        self.users = [
-                    User(username: "admin", role: .admin),
-                    User(username: "editor1", role: .editor(userId: UUID().uuidString)),
-                    User(username: "viewer1", role: .viewer)
-                ]
     }
-    var isClipboardCut = false
-    var currentUser: User?
-       var users: [User] = []
     
     func start() {
-            authenticateUser()
+        userManager.authenticateUser()
+        
+        while true {
+            printMainMenu()
             
-            while true {
-                printMainMenu()
-                
-                guard let input = readLine()?.lowercased() else { continue }
-                
-                switch input {
-                case "1": createNewDocument()
-                case "2": openDocument()
-                case "3": editDocument()
-                case "4": deleteDocument()
-                case "5": saveChanges()
-                case "6": searchText()
-                case "7":
-                    print("Выход. До свидания!")
-                    return
-                case "8":
-                    if currentUser?.canManageUsers() == true {
-                        manageUsers()
-                    } else {
-                        print("У вас нет прав для управления пользователями.")
-                    }
-                case "9":
-                    authenticateUser()
-                case "10": saveToFirebase()
-                default:
-                    print("Неверная команда.")
+            guard let input = readLine()?.lowercased() else { continue }
+            
+            switch input {
+            case "1": createNewDocument()
+            case "2": openDocument()
+            case "3": editDocument()
+            case "4": deleteDocument()
+            case "5": saveChanges()
+            case "6": searchText()
+            case "7":
+                print("Выход. До свидания!")
+                return
+            case "8":
+                if currentUser?.canManageUsers() == true {
+                    userManager.manageUsers()
+                } else {
+                    print("У вас нет прав для управления пользователями.")
                 }
+            case "9":
+                if currentUser?.canManagePermissions() == true {
+                    filePermissionManager.manageFilePermissions()
+                } else {
+                    print("У вас нет прав для управления правами доступа.")
+                }
+            case "10":  userManager.authenticateUser()
+            case "11": saveToFirebase()
+            case "12": viewNotificationLogs()
+            default:
+                print("Неверная команда.")
             }
         }
+    }
+    
+    // Добавьте новый метод:
+    private func viewNotificationLogs() {
+        clearScreen()
+        print("=== NOTIFICATION LOGS ===")
+        let logs = NotificationLogger.shared.readLogs()
+        print(logs)
+        print("\nPress Enter to continue...")
+        _ = readLine()
+    }
+    
+    //функция сохранение в облако
     private func saveToFirebase() {
         guard let user = currentUser else {
             print("Требуется авторизация")
@@ -69,33 +88,43 @@ class CLIHandler {
             return
         }
         
-        // Обрабатываем имя файла и сохраняем его с расширением
         let components = fileName.components(separatedBy: ".")
-        if components.count > 1 {
-            // Если есть расширение, сохраняем полное имя
-            doc.fileName = fileName
-        } else {
-            // Если расширения нет, сохраняем имя без изменений
-            doc.fileName = fileName
-        }
-
-        // Логируем информацию для отладки
+        doc.fileName = components.count > 1 ? fileName : fileName
+        
         print("Попытка сохранить файл: \(doc.fileName)")
         
         // Сохраняем документ в Firestore
-        FirebaseService.shared.saveDocument(userID: user.userId, fileName: doc.fileName, content: doc.content) { success, error in
+        FirebaseService.shared.saveDocument(
+            userID: user.userId,
+            fileName: doc.fileName,
+            content: doc.content
+        ) { success, error in
             if success {
                 print("Документ успешно сохранен в Firestore")
+                
+                // Дополнительно сохраняем в Firebase Storage
+                let contentAsString = doc.content.joined(separator: "\n")
+                FirebaseService.shared.uploadDocumentToStorage(
+                    userID: user.userId,
+                    fileName: doc.fileName,
+                    content: contentAsString
+                ) { success, error in
+                    if success {
+                        print("Документ также сохранен в Firebase Storage")
+                    } else {
+                        print("Ошибка при сохранении в Storage: \(error?.localizedDescription ?? "Неизвестная ошибка")")
+                    }
+                }
             } else {
-                // Логируем ошибку, если она произошла
                 print("Ошибка при сохранении в Firestore: \(error?.localizedDescription ?? "Неизвестная ошибка")")
             }
         }
     }
 
-        private func printMainMenu() {
-            clearScreen()
-            print("""
+    //главное меню
+    private func printMainMenu() {
+        clearScreen()
+        print("""
             
             ==== МЕНЮ ====
             1. Создать новый документ
@@ -106,277 +135,167 @@ class CLIHandler {
             6. Поиск текста в документе
             7. Выйти
             8. Управление пользователями\(currentUser?.canManageUsers() == true ? "" : " (недоступно)")
-            9. Сменить пользователя
-            10.Сохранение в облочное хранилище
+            9. Управление правами доступа\(currentUser?.canManagePermissions() == true ? "" : " (недоступно)")
+            10. Сменить пользователя
+            11.Сохранение в облочное хранилище
+            12.NOTIFICATION LOGS
             ===============
             Текущий файл: \(editor.currentDocument?.fileName ?? "Нет")
             Текущий пользователь: \(currentUser?.username ?? "Не авторизован") (\(currentUser?.roleString ?? ""))
             Введите команду:
             """, terminator: " ")
-        }
-        
-        private func authenticateUser() {
-            clearScreen()
-            print("=== АВТОРИЗАЦИЯ ===")
-            print("Доступные пользователи:")
-            for (index, user) in users.enumerated() {
-                print("\(index + 1). \(user.username) (\(user.roleString))")
-            }
-            print("Введите номер пользователя или имя:", terminator: " ")
-            
-            guard let input = readLine() else { return }
-            
-            if let index = Int(input), index > 0, index <= users.count {
-                currentUser = users[index - 1]
-            } else if let user = users.first(where: { $0.username.lowercased() == input.lowercased() }) {
-                currentUser = user
-            } else {
-                print("Пользователь не найден. Используется гостевой доступ (только просмотр).")
-                currentUser = User(username: "guest", role: .viewer)
-            }
-            
-            // Добавляем пользователя как наблюдателя
-            if let doc = editor.currentDocument {
-                doc.notifier.addObserver(currentUser!)
-            }
-        }
-        
-        private func manageUsers() {
-            guard currentUser?.canManageUsers() == true else {
-                print("У вас нет прав для управления пользователями.")
-                return
-            }
-            
-            while true {
-                clearScreen()
-                print("""
-                
-                ==== УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ====
-                1. Список пользователей
-                2. Добавить пользователя
-                3. Изменить роль пользователя
-                4. Удалить пользователя
-                5. Назад
-                ===================================
-                Введите команду:
-                """, terminator: " ")
-                
-                guard let input = readLine() else { continue }
-                
-                switch input {
-                case "1": listUsers()
-                case "2": addUser()
-                case "3": changeUserRole()
-                case "4": removeUser()
-                case "5": return
-                default: print("Неверная команда.")
-                }
-            }
-        }
-        
-    private func listUsers() {
-            clearScreen()
-            print("=== СПИСОК ПОЛЬЗОВАТЕЛЕЙ ===")
-            for (index, user) in users.enumerated() {
-                print("\(index + 1). \(user.username) (\(user.roleString))")
-            }
-            print("\nНажмите Enter для продолжения...")
-            _ = readLine()
-        }
-        
-        private func addUser() {
-            guard currentUser?.canManageUsers() == true else {
-                print("У вас нет прав для добавления пользователей.")
-                return
-            }
-            
-            clearScreen()
-            print("=== ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ===")
-            print("Введите имя пользователя:", terminator: " ")
-            guard let username = readLine(), !username.isEmpty else {
-                print("Имя пользователя не может быть пустым.")
-                return
-            }
-            
-            if users.contains(where: { $0.username.lowercased() == username.lowercased() }) {
-                print("Пользователь с таким именем уже существует.")
-                return
-            }
-            
-            print("""
-            Выберите роль:
-            1 - Viewer (только просмотр)
-            2 - Editor (редактирование своих документов)
-            3 - Admin (полные права)
-            Введите номер роли:
-            """, terminator: " ")
-            
-            guard let roleInput = readLine(), let roleNum = Int(roleInput) else {
-                print("Некорректный ввод.")
-                return
-            }
-            
-            let role: UserRole
-            switch roleNum {
-            case 1: role = .viewer
-            case 2: role = .editor(userId: UUID().uuidString)
-            case 3: role = .admin
-            default:
-                print("Некорректный номер роли.")
-                return
-            }
-            
-            let newUser = User(username: username, role: role)
-            users.append(newUser)
-            print("Пользователь \(username) успешно добавлен с ролью \(newUser.roleString).")
-        }
-        
-        private func changeUserRole() {
-            guard currentUser?.canManageUsers() == true else {
-                print("У вас нет прав для изменения ролей пользователей.")
-                return
-            }
-            
-            clearScreen()
-            print("=== ИЗМЕНЕНИЕ РОЛИ ПОЛЬЗОВАТЕЛЯ ===")
-            listUsers()
-            print("Введите номер пользователя для изменения:", terminator: " ")
-            
-            guard let input = readLine(), let index = Int(input), index > 0, index <= users.count else {
-                print("Некорректный ввод.")
-                return
-            }
-            
-            let user = users[index - 1]
-            if user.username == currentUser?.username {
-                print("Нельзя изменить роль текущего пользователя.")
-                return
-            }
-            
-            print("""
-            Выберите новую роль:
-            1 - Viewer (только просмотр)
-            2 - Editor (редактирование своих документов)
-            3 - Admin (полные права)
-            Текущая роль: \(user.roleString)
-            Введите номер новой роли:
-            """, terminator: " ")
-            
-            guard let roleInput = readLine(), let roleNum = Int(roleInput) else {
-                print("Некорректный ввод.")
-                return
-            }
-            
-            let newRole: UserRole
-            switch roleNum {
-            case 1: newRole = .viewer
-            case 2:
-                if case .editor(let userId) = user.role {
-                    newRole = .editor(userId: userId)
-                } else {
-                    newRole = .editor(userId: UUID().uuidString)
-                }
-            case 3: newRole = .admin
-            default:
-                print("Некорректный номер роли.")
-                return
-            }
-            
-            users[index - 1] = User(username: user.username, role: newRole)
-            print("Роль пользователя \(user.username) изменена на \(users[index - 1].roleString).")
-        }
-        
-        private func removeUser() {
-            guard currentUser?.canManageUsers() == true else {
-                print("У вас нет прав для удаления пользователей.")
-                return
-            }
-            
-            clearScreen()
-            print("=== УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ===")
-            listUsers()
-            print("Введите номер пользователя для удаления:", terminator: " ")
-            
-            guard let input = readLine(), let index = Int(input), index > 0, index <= users.count else {
-                print("Некорректный ввод.")
-                return
-            }
-            
-            let user = users[index - 1]
-            if user.username == currentUser?.username {
-                print("Нельзя удалить текущего пользователя.")
-                return
-            }
-            
-            users.remove(at: index - 1)
-            print("Пользователь \(user.username) удален.")
-        }
+    }
     
+    
+    //создание документа
     func createNewDocument() {
         guard currentUser?.canCreateDocument() == true else {
             print("У вас нет прав для создания документов.")
             return
         }
-
+        
         let createDocumentCommand = CreateDocumentCommand(editor: editor, currentUser: currentUser)
         createDocumentCommand.execute()
-
-        if let doc = editor.currentDocument {
+        
+        if var doc = editor.currentDocument {
+            // Добавляем текущего пользователя как наблюдателя
             doc.notifier.addObserver(currentUser!)
+            
+            // Устанавливаем права владельца для создателя документа
+            if let username = currentUser?.username {
+                fileAccessControl.setPermission(
+                    forUser: username,
+                    file: doc.fileName,
+                    permission: .owner
+                )
+            }
+            
+            // Сохраняем информацию о владельце документа
+            doc.ownerId = currentUser?.userId
+            
+            print("Документ '\(doc.fileName)' создан. Вам назначены права владельца.")
         }
     }
 
-    
-    
+    //открытие документа
     func openDocument() {
+        print("Доступные пользователи в системе:")
+           print(fileAccessControl.userRoles.keys)
         let openDocumentCommand = OpenDocumentCommand(editor: editor)
-                openDocumentCommand.execute()
-                
-                if let doc = editor.currentDocument {
-                    doc.notifier.addObserver(currentUser!)
-                }
+        openDocumentCommand.execute()
+        
+        if let doc = editor.currentDocument {
+            guard let username = currentUser?.username else {
+                print("Ошибка: пользователь не авторизован.")
+                return
+            }
+            
+            let permission = fileAccessControl.getPermission(forUser: username, file: doc.fileName)
+            
+            if permission.contains(.denyRead) || !permission.contains(.read) {
+                print("У вас нет прав для просмотра этого документа.")
+                editor.currentDocument = nil
+                return
+            }
+            
+            doc.notifier.addObserver(currentUser!)
+        }
     }
-    
     
     // Функция поиска текста в документе
     func searchText() {
-        guard currentUser?.canSearchDocument() == true else {
-                   print("У вас нет прав для поиска в документах.")
-                   return
-               }
-               
-               let command = SearchCommand(editor: editor)
-               command.execute()
+        guard let doc = editor.currentDocument else {
+            print("Нет открытого документа для поиска.")
+            return
+        }
+        
+        guard let username = currentUser?.username else {
+            print("Ошибка: пользователь не авторизован.")
+            return
+        }
+        
+        let permission = fileAccessControl.getPermission(forUser: username, file: doc.fileName)
+        
+        if !permission.contains(.read) {
+            print("У вас нет прав для поиска текста этого документа.")
+            return
+        }
+        
+        let command = SearchCommand(editor: editor)
+        command.execute()
     }
-
+    
     func deleteDocument() {
         guard let doc = editor.currentDocument else {
-                    print("Нет открытого документа для удаления.")
-                    return
-                }
-                
-                guard let currentUser = currentUser,
-                      currentUser.canDeleteDocument(documentOwnerId: doc.ownerId) else {
-                    print("У вас нет прав для удаления этого документа.")
-                    return
-                }
-                
-                let command = DeleteDocumentCommand(editor: editor)
-                command.execute()
+            print("Нет открытого документа для удаления.")
+            return
+        }
+        
+        guard let username = currentUser?.username else {
+            print("Ошибка: пользователь не авторизован.")
+            return
+        }
+        
+        // Проверяем специальные права на файл или стандартные права по роли
+        let permission = fileAccessControl.getPermission(forUser: username, file: doc.fileName)
+        
+        if !permission.contains(.delete) {
+            print("У вас нет прав для удаления этого документа.")
+            return
+        }
+        
+        let command = DeleteDocumentCommand(editor: editor)
+        command.execute()
+        
+        // Удаляем все записи о правах доступа для этого файла
+        fileAccessControl.filePermissions.removeValue(forKey: doc.fileName)
     }
     
     func editDocument() {
-               guard let doc = editor.currentDocument else {
-                   print("Документ не открыт.")
-                   return
-               }
-        guard currentUser?.canEditDocument(documentOwnerId: doc.ownerId) == true else {
-                   print("У вас нет прав для редактирования документов.")
-                   return
-               }
-               
-               print("Текущий документ: \(doc.fileName)")
-               startEditing()
+        guard let doc = editor.currentDocument else {
+            print("Документ не открыт.")
+            return
+        }
+        
+        guard let username = currentUser?.username else {
+            print("Ошибка: пользователь не авторизован.")
+            return
+        }
+        
+        let permission = fileAccessControl.getPermission(forUser: username, file: doc.fileName)
+        
+        if !permission.contains(.edit) {
+            print("У вас нет прав для редактирования этого документа.")
+            return
+        }
+        
+        print("Текущий документ: \(doc.fileName)")
+        print("Ваши права: \(permission.description())")
+        startEditing()
+    }
+    
+    func saveChanges() {
+        guard let doc = editor.currentDocument else { return }
+        
+        guard let username = currentUser?.username else {
+            print("Ошибка: пользователь не авторизован.")
+            return
+        }
+        
+        // Проверяем права на сохранение
+        let permission = fileAccessControl.getPermission(forUser: username, file: doc.fileName)
+        
+        if !permission.contains(.edit) {
+            print("У вас нет прав для сохранения этого документа.")
+            return
+        }
+        
+        if doc.save() {
+            print("Изменения сохранены в файл '\(doc.fileName)'.")
+            doc.notifier.notifyObservers(document: doc, change: "Документ сохранен")
+        } else {
+            print("Ошибка при сохранении файла.")
+        }
     }
     
     // Основная функция редактирования текста
@@ -531,84 +450,66 @@ class CLIHandler {
     }
     
     
-    
     func moveCursorLeft() {
-           let command = MoveCursorCommand(cliHandler: self, direction: .left)
-           undoRedoManager.execute(command)
-       }
-       
-       func moveCursorRight() {
-           let command = MoveCursorCommand(cliHandler: self, direction: .right)
-           undoRedoManager.execute(command)
-       }
-       
-       func moveCursorUp() {
-           let command = MoveCursorCommand(cliHandler: self, direction: .up)
-           undoRedoManager.execute(command)
-       }
-       
-       func moveCursorDown() {
-           let command = MoveCursorCommand(cliHandler: self, direction: .down)
-           undoRedoManager.execute(command)
-       }
+        let command = MoveCursorCommand(cliHandler: self, direction: .left)
+        undoRedoManager.execute(command)
+    }
+    
+    func moveCursorRight() {
+        let command = MoveCursorCommand(cliHandler: self, direction: .right)
+        undoRedoManager.execute(command)
+    }
+    
+    func moveCursorUp() {
+        let command = MoveCursorCommand(cliHandler: self, direction: .up)
+        undoRedoManager.execute(command)
+    }
+    
+    func moveCursorDown() {
+        let command = MoveCursorCommand(cliHandler: self, direction: .down)
+        undoRedoManager.execute(command)
+    }
     
     func startInsertMode() {
-           isInInsertMode = true
-           print("Вы вошли в режим ввода текста. Для выхода из режима ввода введите /e.")
-           while isInInsertMode {
-               clearScreen()
-               displayContent()
-               print("\nВведите текст (для новой строки используйте Enter, для выхода введите /e): ", terminator: "")
-               
-               guard let inputText = readLine() else { continue }
-               
-               if inputText == "/e" {
-                   isInInsertMode = false
-                   return
-               }
-               
-               let command = InsertTextCommand(
-                   document: editor.currentDocument,
-                   cliHandler: self,
-                   text: inputText
-               )
-               undoRedoManager.execute(command)
-           }
-       }
-       
-       func deleteCharacterLeft() {
-           guard cursorPosition.col > 0 else { return }
-           
-           let range = (
-               start: (row: cursorPosition.row, col: cursorPosition.col - 1),
-               end: (row: cursorPosition.row, col: cursorPosition.col)
-           )
-           
-           let command = DeleteTextCommand(
-               document: editor.currentDocument,
-               cliHandler: self,
-               range: range
-           )
-           undoRedoManager.execute(command)
-       }
-    
-    
-    func saveChanges() {
-        guard let doc = editor.currentDocument else { return }
-        guard currentUser?.canSaveDocument(documentOwnerId: doc.ownerId)  == true else {
-                    print("У вас нет прав для сохранения документов.")
-                    return
-                }
-                
-                
-                
-                if doc.save() {
-                    print("Изменения сохранены в файл '\(doc.fileName)'.")
-                    doc.notifier.notifyObservers(document: doc, change: "Документ сохранен")
-                } else {
-                    print("Ошибка при сохранении файла.")
-                }
+        isInInsertMode = true
+        print("Вы вошли в режим ввода текста. Для выхода из режима ввода введите /e.")
+        while isInInsertMode {
+            clearScreen()
+            displayContent()
+            print("\nВведите текст (для новой строки используйте Enter, для выхода введите /e): ", terminator: "")
+            
+            guard let inputText = readLine() else { continue }
+            
+            if inputText == "/e" {
+                isInInsertMode = false
+                return
+            }
+            
+            let command = InsertTextCommand(
+                document: editor.currentDocument,
+                cliHandler: self,
+                text: inputText
+            )
+            undoRedoManager.execute(command)
+        }
     }
+    
+    func deleteCharacterLeft() {
+        guard cursorPosition.col > 0 else { return }
+        
+        let range = (
+            start: (row: cursorPosition.row, col: cursorPosition.col - 1),
+            end: (row: cursorPosition.row, col: cursorPosition.col)
+        )
+        
+        let command = DeleteTextCommand(
+            document: editor.currentDocument,
+            cliHandler: self,
+            range: range
+        )
+        undoRedoManager.execute(command)
+    }
+    
     func startSelectionMode() {
         isInSelectionMode = true
         selectionStart = cursorPosition
@@ -617,7 +518,7 @@ class CLIHandler {
             displayContent()
             print("Выделение: от \(selectionStart!) до \(cursorPosition)")
             print("Команды: 1 - влево, 2 - вправо, 3 - вниз, 4 - вверх, c - копировать, x - вырезать, i - курсив, b - жирный, u - подчёркнутый, r - снять формат, /e - выход")
-
+            
             
             guard let input = readLine()?.lowercased() else { continue }
             
@@ -729,45 +630,45 @@ class CLIHandler {
     }
     
     func pasteClipboard() {
-           guard !clipboard.isEmpty else { return }
-           
-           let command = PasteCommand(
-               document: editor.currentDocument,
-               cliHandler: self,
-               text: clipboard
-           )
-           undoRedoManager.execute(command)
+        guard !clipboard.isEmpty else { return }
+        
+        let command = PasteCommand(
+            document: editor.currentDocument,
+            cliHandler: self,
+            text: clipboard
+        )
+        undoRedoManager.execute(command)
         // Если это был вырезанный текст — очищаем буфер
-            if isClipboardCut {
-                clipboard = ""
-                isClipboardCut = false
-            }
-       }
-       
-       func applyFormattingToSelection(format: TextFormat) {
-           guard let selStart = selectionStart else { return }
-           
-           let start = positionLessThanOrEqual(selStart, cursorPosition) ? selStart : cursorPosition
-           let end = positionLessThanOrEqual(selStart, cursorPosition) ? cursorPosition : selStart
-           
-           let formatType: FormatTextCommand.FormatType
-           switch format {
-           case .bold: formatType = .bold
-           case .italic: formatType = .italic
-           case .underline: formatType = .underline
-           }
-           
-           let command = FormatTextCommand(
-               document: editor.currentDocument,
-               cliHandler: self,
-               range: (start, end),
-               format: formatType
-           )
-           undoRedoManager.execute(command)
-           
-           isInSelectionMode = false
-           selectionStart = nil
-       }
+        if isClipboardCut {
+            clipboard = ""
+            isClipboardCut = false
+        }
+    }
+    
+    func applyFormattingToSelection(format: TextFormat) {
+        guard let selStart = selectionStart else { return }
+        
+        let start = positionLessThanOrEqual(selStart, cursorPosition) ? selStart : cursorPosition
+        let end = positionLessThanOrEqual(selStart, cursorPosition) ? cursorPosition : selStart
+        
+        let formatType: FormatTextCommand.FormatType
+        switch format {
+        case .bold: formatType = .bold
+        case .italic: formatType = .italic
+        case .underline: formatType = .underline
+        }
+        
+        let command = FormatTextCommand(
+            document: editor.currentDocument,
+            cliHandler: self,
+            range: (start, end),
+            format: formatType
+        )
+        undoRedoManager.execute(command)
+        
+        isInSelectionMode = false
+        selectionStart = nil
+    }
     
     
     enum TextFormat {
@@ -775,24 +676,22 @@ class CLIHandler {
         case italic
         case underline
     }
-
-    
     
     func removeFormattingFromSelection() {
         guard selectionStart != nil else { return }
         
         let selectedText = getSelectedText()
         guard !selectedText.isEmpty else { return }
-
+        
         // Удаление всех типов форматирования
-            let plainText = selectedText
+        let plainText = selectedText
             .replacingOccurrences(of: "**", with: "")     // bold
             .replacingOccurrences(of: "*", with: "")       // italic
             .replacingOccurrences(of: "<u>", with: "")     // underline start
             .replacingOccurrences(of: "</u>", with: "")    // underline end
-
+        
         deleteSelectedText()
-
+        
         let currentLine = editor.currentDocument?.content[cursorPosition.row] ?? ""
         let leftPart = currentLine.prefix(cursorPosition.col)
         let rightPart = currentLine.suffix(currentLine.count - cursorPosition.col)

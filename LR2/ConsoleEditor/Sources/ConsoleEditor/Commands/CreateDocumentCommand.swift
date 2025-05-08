@@ -1,9 +1,4 @@
-//
-//  CreateDocumentCommand.swift
-//  ConsoleEditor
-//
-//  Created by Artem on 10.04.25.
-//
+
 import Foundation
 
 class CreateDocumentCommand {

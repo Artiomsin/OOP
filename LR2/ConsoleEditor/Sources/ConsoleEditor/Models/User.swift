@@ -5,6 +5,13 @@ enum UserRole {
     case viewer
     case editor(userId: String) // Теперь editor имеет идентификатор пользователя
     case admin
+    var defaultPermissions: FilePermission {
+            switch self {
+            case .viewer: return .viewer
+            case .editor: return .editor
+            case .admin: return .owner
+            }
+        }
 }
 
 class User: DocumentObserver {
@@ -32,6 +39,10 @@ class User: DocumentObserver {
             self.accessStrategy = AdminAccessStrategy()
         }
     }
+    
+    func canManagePermissions() -> Bool {
+           return accessStrategy.canManagePermissions()
+       }
     
     // Реализация метода observer
     func documentChanged(_ document: Document, changeDescription: String) {
@@ -65,3 +76,6 @@ class User: DocumentObserver {
        }
    
 }
+
+
+

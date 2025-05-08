@@ -16,6 +16,15 @@ class DocumentNotifier {
     }
     
     func notifyObservers(document: Document, change: String) {
+        let recipients = observers.compactMap { $0 as? User }.map { $0.username }
+                
+                // Логируем уведомление
+                NotificationLogger.shared.logNotification(
+                    documentName: document.fileName,
+                    changeDescription: change,
+                    recipients: recipients
+                )
+                
         observers.forEach { $0.documentChanged(document, changeDescription: change) }
     }
 }

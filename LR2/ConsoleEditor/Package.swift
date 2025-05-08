@@ -21,7 +21,11 @@ let package = Package(
             resources: [
                 .process("GoogleService-Info.plist")
             ]
-        )
+        ),
+            .testTarget(
+            name: "ConsoleEditorTests",
+            dependencies: ["ConsoleEditor"]
+        ),
     ]
 )
 

@@ -22,7 +22,6 @@ class DocumentCommand: Command {
     }
     
     func execute() {
-        // Должен быть переопределен в подклассах
     }
     
     func undo() {
