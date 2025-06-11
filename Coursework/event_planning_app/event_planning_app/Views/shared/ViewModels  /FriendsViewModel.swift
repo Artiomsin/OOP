@@ -1,5 +1,5 @@
 import SwiftUI
-import FirebaseAuth
+import SocialPlanningKit
 
 class FriendsViewModel: ObservableObject {
     @Published var friends: [String] = []  // Список userID друзей
@@ -8,15 +8,27 @@ class FriendsViewModel: ObservableObject {
     @Published var friendRequestNames: [String] = []  // Имена пользователей, отправивших запросы
     @Published var currentUserName: String = ""  // Имя текущего пользователя
     
-    @Published var searchResults: [String] = []//new**
+    @Published var searchResults: [String] = []
+    
     @Published var errorMessage: String? = nil //new**
     
-    private let firestoreService = FirestoreService()
+    private let friendService: FriendServiceProtocol
+    private let userService: UserServiceProtocol
+    private let authService: AuthServiceProtocol
+    
     private var currentUserID: String? {
-        Auth.auth().currentUser?.uid
+        authService.currentUserID
     }
     
-    init() {
+    init(
+        friendService: FriendServiceProtocol = FriendService.shared,
+        userService: UserServiceProtocol = UserService.shared,
+        authService: AuthServiceProtocol = AuthService.shared
+    ) {
+        self.friendService = friendService
+        self.userService = userService
+        self.authService = authService
+        
         loadUserName()
         loadFriends()
         observeFriendRequests()
@@ -26,7 +38,7 @@ class FriendsViewModel: ObservableObject {
     func loadUserName() {
         guard let userID = currentUserID else { return }
         
-        firestoreService.getUserName(userID: userID) { [weak self] name in
+        userService.getUserName(userID: userID) { [weak self] name in
             DispatchQueue.main.async {
                 self?.currentUserName = name
             }
@@ -36,7 +48,7 @@ class FriendsViewModel: ObservableObject {
     // Загрузка списка userID друзей
     func loadFriends() {
         guard let userID = currentUserID else { return }
-        firestoreService.getFriendsList(userID: userID) { [weak self] friends in
+        friendService.getFriendsList(userID: userID) { [weak self] friends in
             DispatchQueue.main.async {
                 self?.friends = friends
                 self?.loadFriendNames(forUserIDs: friends)
@@ -51,7 +63,7 @@ class FriendsViewModel: ObservableObject {
         
         for (index, userID) in userIDs.enumerated() {
             dispatchGroup.enter()
-            firestoreService.getUserName(userID: userID) { name in
+            userService.getUserName(userID: userID) { name in
                 DispatchQueue.main.async {
                     names[index] = name
                 }
@@ -71,7 +83,7 @@ class FriendsViewModel: ObservableObject {
         
         for (index, userID) in userIDs.enumerated() {
             dispatchGroup.enter()
-            firestoreService.getUserName(userID: userID) { name in
+            userService.getUserName(userID: userID) { name in
                 DispatchQueue.main.async {
                     names[index] = name
                 }
@@ -88,7 +100,7 @@ class FriendsViewModel: ObservableObject {
     func sendFriendRequest(toEmail email: String) {
         guard let currentUserID = currentUserID else { return }
         
-        firestoreService.getUserIDByEmail(email: email) { [weak self] userID in
+        userService.getUserIDByEmail(email: email) { [weak self] userID in
             guard let userID = userID else {
                 DispatchQueue.main.async {
                     self?.errorMessage = "Пользователь с таким email не найден"
@@ -116,7 +128,7 @@ class FriendsViewModel: ObservableObject {
             }
             
             // Если все проверки пройдены, отправляем запрос
-            self?.firestoreService.sendFriendRequest(fromUserID: currentUserID, toUserID: userID) { error in
+            self?.friendService.sendFriendRequest(fromUserID: currentUserID, toUserID: userID) { error in
                 if let error = error {
                     DispatchQueue.main.async {
                         self?.errorMessage = "Ошибка при отправке запроса: \(error.localizedDescription)"
@@ -136,7 +148,7 @@ class FriendsViewModel: ObservableObject {
     // Подписка на входящие запросы в друзья
     func observeFriendRequests() {
         guard let currentUserID = currentUserID else { return }
-        firestoreService.observeFriendRequests(userID: currentUserID) { [weak self] requests in
+        friendService.observeFriendRequests(userID: currentUserID) { [weak self] requests in
             DispatchQueue.main.async {
                 self?.friendRequests = requests
                 self?.loadFriendRequestNames(forUserIDs: requests)
@@ -148,7 +160,7 @@ class FriendsViewModel: ObservableObject {
     func acceptFriendRequest(fromUserID: String) {
         guard let currentUserID = currentUserID else { return }
         
-        firestoreService.acceptFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { [weak self] error in
+        friendService.acceptFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { [weak self] error in
             guard let self = self else { return }
             
             if let error = error {
@@ -169,7 +181,7 @@ class FriendsViewModel: ObservableObject {
     func declineFriendRequest(fromUserID: String) {
         guard let currentUserID = currentUserID else { return }
         
-        firestoreService.declineFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { [weak self] error in
+        friendService.declineFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { [weak self] error in
             if let error = error {
                 print("Ошибка при отклонении запроса: \(error.localizedDescription)")
             } else {
@@ -187,7 +199,7 @@ class FriendsViewModel: ObservableObject {
     func removeFriend(friendID: String) {
         guard let currentUserID = currentUserID else { return }
         
-        firestoreService.removeFriend(userID: currentUserID, friendID: friendID) { [weak self] error in
+        friendService.removeFriend(userID: currentUserID, friendID: friendID) { [weak self] error in
             if let error = error {
                 print("Ошибка при удалении друга: \(error.localizedDescription)")
             } else {
@@ -205,170 +217,18 @@ class FriendsViewModel: ObservableObject {
             return
         }
         
-        firestoreService.searchUsersByEmail(query: query) { [weak self] users in
+        userService.searchUsersByEmail(query: query) { [weak self] users in
             DispatchQueue.main.async {
                 if users.isEmpty {
                     self?.errorMessage = "Пользователи не найдены"
                 } else {
                     self?.errorMessage = nil  // Очистка ошибки
                 }
-                self?.searchResults = users
+                self?.searchResults = users.map { $0.name }
             }
         }
     }
     
 }
 
-
-/*
- import SwiftUI
- import FirebaseAuth
- 
- class FriendsViewModel: ObservableObject {
- @Published var friends: [String] = []  // Список userID друзей
- @Published var friendNames: [String] = []  // Список имен друзей
- @Published var friendRequests: [String] = []  // Список запросов в друзья
- @Published var friendRequestNames: [String] = []  // Имена пользователей, отправивших запросы
- @Published var currentUserName: String = ""  // Имя текущего пользователя
- 
- private let firestoreService = FirestoreService()
- private var currentUserID: String? {
- Auth.auth().currentUser?.uid
- }
- 
- init() {
- loadUserName()
- loadFriends()
- observeFriendRequests()
- }
- 
- // Загрузка имени текущего пользователя
- func loadUserName() {
- guard let userID = currentUserID else { return }
- 
- firestoreService.getUserName(userID: userID) { [weak self] name in
- DispatchQueue.main.async {
- self?.currentUserName = name
- }
- }
- }
- 
- // Загрузка списка userID друзей
- func loadFriends() {
- guard let userID = currentUserID else { return }
- firestoreService.getFriendsList(userID: userID) { [weak self] friends in
- DispatchQueue.main.async {
- self?.friends = friends
- self?.loadFriendNames(forUserIDs: friends)  // Загружаем имена друзей
- }
- }
- }
- 
- // Загружаем имена друзей по списку userID
- func loadFriendNames(forUserIDs userIDs: [String]) {
- var names: [String] = []
- 
- let dispatchGroup = DispatchGroup()
- 
- for userID in userIDs {
- dispatchGroup.enter()
- firestoreService.getUserName(userID: userID) { name in
- names.append(name)
- dispatchGroup.leave()
- }
- }
- 
- dispatchGroup.notify(queue: .main) {
- self.friendNames = names
- }
- }
- 
- // Загружаем имена пользователей, которые отправили запросы в друзья
- func loadFriendRequestNames(forUserIDs userIDs: [String]) {
- var names: [String] = []
- 
- let dispatchGroup = DispatchGroup()
- 
- for userID in userIDs {
- dispatchGroup.enter()
- firestoreService.getUserName(userID: userID) { name in
- names.append(name)
- dispatchGroup.leave()
- }
- }
- 
- dispatchGroup.notify(queue: .main) {
- self.friendRequestNames = names
- }
- }
- 
- // Отправка запроса в друзья по email
- func sendFriendRequest(toEmail email: String) {
- guard let currentUserID = currentUserID else { return }
- 
- firestoreService.getUserIDByEmail(email: email) { [weak self] userID in
- guard let userID = userID else {
- print("Пользователь с таким email не найден")
- return
- }
- 
- self?.firestoreService.sendFriendRequest(fromUserID: currentUserID, toUserID: userID) { error in
- if let error = error {
- print("Ошибка при отправке запроса: \(error.localizedDescription)")
- } else {
- print("Запрос отправлен")
- }
- }
- }
- }
- 
- // Подписка на входящие запросы в друзья
- func observeFriendRequests() {
- guard let currentUserID = currentUserID else { return }
- firestoreService.observeFriendRequests(userID: currentUserID) { [weak self] requests in
- DispatchQueue.main.async {
- self?.friendRequests = requests
- self?.loadFriendRequestNames(forUserIDs: requests)  // Загружаем имена пользователей, отправивших запросы
- }
- }
- }
- 
- // Принять запрос в друзья
- func acceptFriendRequest(fromUserID: String) {
- guard let currentUserID = currentUserID else { return }
- firestoreService.acceptFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { error in
- if let error = error {
- print("Ошибка при добавлении в друзья: \(error.localizedDescription)")
- } else {
- self.loadFriends()
- }
- }
- }
- 
- // Отклонить запрос в друзья
- func declineFriendRequest(fromUserID: String) {
- guard let currentUserID = currentUserID else { return }
- firestoreService.declineFriendRequest(fromUserID: fromUserID, toUserID: currentUserID) { error in
- if let error = error {
- print("Ошибка при отклонении запроса: \(error.localizedDescription)")
- }
- }
- }
- 
- // Удаление друга
- func removeFriend(friendID: String) {
- guard let currentUserID = currentUserID else { return }
- firestoreService.removeFriend(userID: currentUserID, friendID: friendID) { error in
- if let error = error {
- print("Ошибка при удалении друга: \(error.localizedDescription)")
- } else {
- self.loadFriends()
- }
- }
- }
- }
- 
- 
- 
- */
 

@@ -42,6 +42,8 @@ struct SideMenuView: View {
                     MenuButton(title: "Profile", icon: "person.fill", selectedTab: $selectedTab, isMenuOpen: $isMenuOpen)
                     MenuButton(title: "Friends", icon: "person.2.fill", selectedTab: $selectedTab, isMenuOpen: $isMenuOpen)
                     MenuButton(title: "Settings", icon: "gearshape.fill", selectedTab: $selectedTab, isMenuOpen: $isMenuOpen)
+                    MenuButton(title: "Meetings", icon: "calendar.badge.plus", selectedTab: $selectedTab, isMenuOpen: $isMenuOpen)
+                    MenuButton(title: "Invitations", icon: "envelope.fill", selectedTab: $selectedTab, isMenuOpen: $isMenuOpen)
                     Spacer()
                 }
                 .frame(width: 245) // Увеличиваем ширину панели

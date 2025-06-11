@@ -1,5 +1,4 @@
 import SwiftUI
-import FirebaseAuth
 import MapKit
 
 struct HomeView: View {
@@ -7,16 +6,20 @@ struct HomeView: View {
     @Binding var userIsLoggedIn: Bool
     @State private var isMenuOpen: Bool = false
     @State private var selectedTab: String = "Home"
+    @StateObject private var mapViewModel = MapViewModel()
+    @StateObject private var friendsVM = FriendsViewModel()
     
     var body: some View {
         NavigationStack {
             ZStack {
                 Group {
                     switch selectedTab {
-                    case "Home": HomeContentView()
+                    case "Home": HomeContentView().environmentObject(mapViewModel)
                     case "Profile": ProfileView(userIsLoggedIn: $userIsLoggedIn)
+                    case "Meetings": MeetingView().environmentObject(friendsVM)
                     case "Settings": SettingsView()
-                    case "Friends": FriendsView()
+                    case "Friends": FriendsView().environmentObject(mapViewModel)
+                    case "Invitations": InvitationsView().environmentObject(friendsVM)
                     default: HomeContentView()
                     }
                 }

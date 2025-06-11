@@ -105,10 +105,15 @@ struct ProfileView: View {
             .shadow(radius: 10)
             .padding()
             .sheet(isPresented: $isImagePickerPresented) {
-                ImagePickerView(selectedImage: $profileViewModel.userUIImage)
+                ImagePickerView { image in
+                    if let image = image {
+                        profileViewModel.uploadProfileImage(image)
+                    }
+                }
             }
+
             .onAppear {
-                profileViewModel.loadUserData()
+                profileViewModel.loadCurrentUserData()
             }
             .alert(isPresented: $showEditDialog) {
                 Alert(

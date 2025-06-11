@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SocialPlanningKit // или название модуля, где лежит LocationManager
 
 struct SignUpView: View {
     @Binding var userIsLoggedIn: Bool

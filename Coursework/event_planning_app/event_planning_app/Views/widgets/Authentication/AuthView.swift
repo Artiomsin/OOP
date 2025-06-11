@@ -1,4 +1,5 @@
 import SwiftUI
+import SocialPlanningKit
 
 struct AuthView: View {
     @Binding var userIsLoggedIn: Bool

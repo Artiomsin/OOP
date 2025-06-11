@@ -5,6 +5,7 @@
 //  Created by Artem on 17.04.25.
 //
 import SwiftUI
+import SocialPlanningKit
 
 struct LoginView: View {
     @Binding var userIsLoggedIn: Bool

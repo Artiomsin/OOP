@@ -2,72 +2,44 @@ import SwiftUI
 
 struct FriendProfileView: View {
     let userID: String
-    @State private var userName: String = "Загрузка..."
-    @State private var email: String = "Загрузка..."
-    @State private var bio: String = "Загрузка..."
-    @State private var profileImageURL: String? = nil
-    
-    private let firestoreService = FirestoreService()
+    @StateObject private var viewModel = ProfileViewModel()
     
     var body: some View {
         VStack {
-            if let url = profileImageURL, let imageURL = URL(string: url) {
-                AsyncImage(url: imageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                    case .success(let image):
-                        image.resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                    case .failure:
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 150, height: 150)
-                            .foregroundColor(.gray)
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
+            if let userUIImage = viewModel.userUIImage {
+                Image(uiImage: userUIImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 150, height: 150)
+                    .clipShape(Circle())
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()
                     .frame(width: 150, height: 150)
                     .foregroundColor(.gray)
             }
-            
-            Text(userName)
+
+           
+            Text(viewModel.userName)
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            Text(email)
+            Text(viewModel.userEmail)
                 .font(.subheadline)
                 .foregroundColor(.gray)
             
-            Text(bio)
+            Text(viewModel.personalInformation)
                 .padding()
                 .font(.body)
             
             Spacer()
         }
         .padding()
-        .navigationTitle("Профиль друга")
         .onAppear {
-            loadUserProfile()
+            viewModel.loadUserData(userID: userID)
         }
-    }
-    
-    // Загружаем данные пользователя по userID, включая фото профиля
-    private func loadUserProfile() {
-        firestoreService.getUserData(uid: userID) { name, email, bio, photoURL in
-            DispatchQueue.main.async {
-                self.userName = name
-                self.email = email
-                self.bio = bio
-                self.profileImageURL = photoURL
-            }
-        }
+        
     }
 }
+
 

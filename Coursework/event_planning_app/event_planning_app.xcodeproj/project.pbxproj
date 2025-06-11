@@ -7,53 +7,80 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AC5EBA842D7CD5A300B89DAD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AC5EBA832D7CD5A300B89DAD /* FirebaseAnalytics */; };
-		AC5EBA862D7CD5A300B89DAD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = AC5EBA852D7CD5A300B89DAD /* FirebaseAuth */; };
-		AC5EBA882D7CD5A300B89DAD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AC5EBA872D7CD5A300B89DAD /* FirebaseCore */; };
-		AC5EBA8A2D7CD5A300B89DAD /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = AC5EBA892D7CD5A300B89DAD /* FirebaseDatabase */; };
-		AC5EBA8C2D7CD5A300B89DAD /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AC5EBA8B2D7CD5A300B89DAD /* FirebaseFirestore */; };
+		ACE7E0F42DE6FDEC00CD99C7 /* SocialPlanningKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACE7E0EC2DE6FDEC00CD99C7 /* SocialPlanningKit.framework */; };
+		ACE7E0F52DE6FDEC00CD99C7 /* SocialPlanningKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ACE7E0EC2DE6FDEC00CD99C7 /* SocialPlanningKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		ACE7E1002DE7022A00CD99C7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = ACE7E0FF2DE7022A00CD99C7 /* FirebaseAuth */; };
+		ACE7E1022DE7023300CD99C7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = ACE7E1012DE7023300CD99C7 /* FirebaseCore */; };
+		ACE7E1042DE7024100CD99C7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACE7E1032DE7024100CD99C7 /* FirebaseAnalytics */; };
+		ACE7E1062DE7024C00CD99C7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = ACE7E1052DE7024C00CD99C7 /* FirebaseFirestore */; };
+		ACE7E1082DE7025700CD99C7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = ACE7E1072DE7025700CD99C7 /* FirebaseDatabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		ACFAB8C82DB18B9300A4927D /* PBXContainerItemProxy */ = {
+		ACB889832DE86E2E00F69444 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AC5EBA692D7CD43E00B89DAD /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = AC5EBA702D7CD43E00B89DAD;
 			remoteInfo = event_planning_app;
 		};
+		ACE7E0F22DE6FDEC00CD99C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AC5EBA692D7CD43E00B89DAD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ACE7E0EB2DE6FDEC00CD99C7;
+			remoteInfo = SocialPlanningKit;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AC0409E32DE0F1DD00B23478 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ACE7E0F52DE6FDEC00CD99C7 /* SocialPlanningKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AC5EBA712D7CD43E00B89DAD /* event_planning_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = event_planning_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		ACFAB8C42DB18B9300A4927D /* appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = appTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC6F5EE12DE0F8B400025F04 /* SocialGeoKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SocialGeoKit.xcodeproj; sourceTree = "<group>"; };
+		ACB8897F2DE86E2E00F69444 /* SocialPlanningKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialPlanningKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACE7E0EC2DE6FDEC00CD99C7 /* SocialPlanningKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SocialPlanningKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		ACFAB8CE2DB18BBA00A4927D /* Exceptions for "event_planning_app" folder in "appTests" target */ = {
+		ACE7E0F92DE6FDEC00CD99C7 /* Exceptions for "SocialPlanningKit" folder in "SocialPlanningKit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Views/services/database/AuthService.swift,
-				Views/services/database/FirestoreService.swift,
-				"Views/shared/Models /FriendLocation.swift",
-				Views/widgets/Home/SettingsView.swift,
+			publicHeaders = (
+				SocialPlanningKit.h,
 			);
-			target = ACFAB8C32DB18B9300A4927D /* appTests */;
+			target = ACE7E0EB2DE6FDEC00CD99C7 /* SocialPlanningKit */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AC5EBA732D7CD43E00B89DAD /* event_planning_app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				ACFAB8CE2DB18BBA00A4927D /* Exceptions for "event_planning_app" folder in "appTests" target */,
-			);
 			path = event_planning_app;
 			sourceTree = "<group>";
 		};
-		ACFAB8C52DB18B9300A4927D /* appTests */ = {
+		ACB889802DE86E2E00F69444 /* SocialPlanningKitTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = appTests;
+			path = SocialPlanningKitTests;
+			sourceTree = "<group>";
+		};
+		ACE7E0ED2DE6FDEC00CD99C7 /* SocialPlanningKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				ACE7E0F92DE6FDEC00CD99C7 /* Exceptions for "SocialPlanningKit" folder in "SocialPlanningKit" target */,
+			);
+			path = SocialPlanningKit;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -63,18 +90,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC5EBA842D7CD5A300B89DAD /* FirebaseAnalytics in Frameworks */,
-				AC5EBA882D7CD5A300B89DAD /* FirebaseCore in Frameworks */,
-				AC5EBA8A2D7CD5A300B89DAD /* FirebaseDatabase in Frameworks */,
-				AC5EBA8C2D7CD5A300B89DAD /* FirebaseFirestore in Frameworks */,
-				AC5EBA862D7CD5A300B89DAD /* FirebaseAuth in Frameworks */,
+				ACE7E0F42DE6FDEC00CD99C7 /* SocialPlanningKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ACFAB8C12DB18B9300A4927D /* Frameworks */ = {
+		ACB8897C2DE86E2E00F69444 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACE7E0E92DE6FDEC00CD99C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ACE7E1082DE7025700CD99C7 /* FirebaseDatabase in Frameworks */,
+				ACE7E1022DE7023300CD99C7 /* FirebaseCore in Frameworks */,
+				ACE7E1062DE7024C00CD99C7 /* FirebaseFirestore in Frameworks */,
+				ACE7E1002DE7022A00CD99C7 /* FirebaseAuth in Frameworks */,
+				ACE7E1042DE7024100CD99C7 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,7 +120,9 @@
 			isa = PBXGroup;
 			children = (
 				AC5EBA732D7CD43E00B89DAD /* event_planning_app */,
-				ACFAB8C52DB18B9300A4927D /* appTests */,
+				ACE7E0ED2DE6FDEC00CD99C7 /* SocialPlanningKit */,
+				ACB889802DE86E2E00F69444 /* SocialPlanningKitTests */,
+				ACE7E0FE2DE7022A00CD99C7 /* Frameworks */,
 				AC5EBA722D7CD43E00B89DAD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -94,12 +131,37 @@
 			isa = PBXGroup;
 			children = (
 				AC5EBA712D7CD43E00B89DAD /* event_planning_app.app */,
-				ACFAB8C42DB18B9300A4927D /* appTests.xctest */,
+				ACE7E0EC2DE6FDEC00CD99C7 /* SocialPlanningKit.framework */,
+				ACB8897F2DE86E2E00F69444 /* SocialPlanningKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AC6F5EE32DE0F8B400025F04 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ACE7E0FE2DE7022A00CD99C7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		ACE7E0E72DE6FDEC00CD99C7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		AC5EBA702D7CD43E00B89DAD /* event_planning_app */ = {
@@ -109,48 +171,73 @@
 				AC5EBA6D2D7CD43E00B89DAD /* Sources */,
 				AC5EBA6E2D7CD43E00B89DAD /* Frameworks */,
 				AC5EBA6F2D7CD43E00B89DAD /* Resources */,
+				AC0409E32DE0F1DD00B23478 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				ACE7E0F32DE6FDEC00CD99C7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AC5EBA732D7CD43E00B89DAD /* event_planning_app */,
 			);
 			name = event_planning_app;
 			packageProductDependencies = (
-				AC5EBA832D7CD5A300B89DAD /* FirebaseAnalytics */,
-				AC5EBA852D7CD5A300B89DAD /* FirebaseAuth */,
-				AC5EBA872D7CD5A300B89DAD /* FirebaseCore */,
-				AC5EBA892D7CD5A300B89DAD /* FirebaseDatabase */,
-				AC5EBA8B2D7CD5A300B89DAD /* FirebaseFirestore */,
 			);
 			productName = event_planning_app;
 			productReference = AC5EBA712D7CD43E00B89DAD /* event_planning_app.app */;
 			productType = "com.apple.product-type.application";
 		};
-		ACFAB8C32DB18B9300A4927D /* appTests */ = {
+		ACB8897E2DE86E2E00F69444 /* SocialPlanningKitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = ACFAB8CA2DB18B9300A4927D /* Build configuration list for PBXNativeTarget "appTests" */;
+			buildConfigurationList = ACB889852DE86E2E00F69444 /* Build configuration list for PBXNativeTarget "SocialPlanningKitTests" */;
 			buildPhases = (
-				ACFAB8C02DB18B9300A4927D /* Sources */,
-				ACFAB8C12DB18B9300A4927D /* Frameworks */,
-				ACFAB8C22DB18B9300A4927D /* Resources */,
+				ACB8897B2DE86E2E00F69444 /* Sources */,
+				ACB8897C2DE86E2E00F69444 /* Frameworks */,
+				ACB8897D2DE86E2E00F69444 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				ACFAB8C92DB18B9300A4927D /* PBXTargetDependency */,
+				ACB889842DE86E2E00F69444 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				ACFAB8C52DB18B9300A4927D /* appTests */,
+				ACB889802DE86E2E00F69444 /* SocialPlanningKitTests */,
 			);
-			name = appTests;
+			name = SocialPlanningKitTests;
 			packageProductDependencies = (
 			);
-			productName = appTests;
-			productReference = ACFAB8C42DB18B9300A4927D /* appTests.xctest */;
+			productName = SocialPlanningKitTests;
+			productReference = ACB8897F2DE86E2E00F69444 /* SocialPlanningKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ACE7E0EB2DE6FDEC00CD99C7 /* SocialPlanningKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ACE7E0F62DE6FDEC00CD99C7 /* Build configuration list for PBXNativeTarget "SocialPlanningKit" */;
+			buildPhases = (
+				ACE7E0E72DE6FDEC00CD99C7 /* Headers */,
+				ACE7E0E82DE6FDEC00CD99C7 /* Sources */,
+				ACE7E0E92DE6FDEC00CD99C7 /* Frameworks */,
+				ACE7E0EA2DE6FDEC00CD99C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				ACE7E0ED2DE6FDEC00CD99C7 /* SocialPlanningKit */,
+			);
+			name = SocialPlanningKit;
+			packageProductDependencies = (
+				ACE7E0FF2DE7022A00CD99C7 /* FirebaseAuth */,
+				ACE7E1012DE7023300CD99C7 /* FirebaseCore */,
+				ACE7E1032DE7024100CD99C7 /* FirebaseAnalytics */,
+				ACE7E1052DE7024C00CD99C7 /* FirebaseFirestore */,
+				ACE7E1072DE7025700CD99C7 /* FirebaseDatabase */,
+			);
+			productName = SocialPlanningKit;
+			productReference = ACE7E0EC2DE6FDEC00CD99C7 /* SocialPlanningKit.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -160,14 +247,17 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					AC5EBA702D7CD43E00B89DAD = {
 						CreatedOnToolsVersion = 16.2;
 					};
-					ACFAB8C32DB18B9300A4927D = {
+					ACB8897E2DE86E2E00F69444 = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = AC5EBA702D7CD43E00B89DAD;
+					};
+					ACE7E0EB2DE6FDEC00CD99C7 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -186,10 +276,17 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AC5EBA722D7CD43E00B89DAD /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AC6F5EE32DE0F8B400025F04 /* Products */;
+					ProjectRef = AC6F5EE12DE0F8B400025F04 /* SocialGeoKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				AC5EBA702D7CD43E00B89DAD /* event_planning_app */,
-				ACFAB8C32DB18B9300A4927D /* appTests */,
+				ACE7E0EB2DE6FDEC00CD99C7 /* SocialPlanningKit */,
+				ACB8897E2DE86E2E00F69444 /* SocialPlanningKitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -202,7 +299,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ACFAB8C22DB18B9300A4927D /* Resources */ = {
+		ACB8897D2DE86E2E00F69444 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACE7E0EA2DE6FDEC00CD99C7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -219,7 +323,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ACFAB8C02DB18B9300A4927D /* Sources */ = {
+		ACB8897B2DE86E2E00F69444 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACE7E0E82DE6FDEC00CD99C7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -229,10 +340,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		ACFAB8C92DB18B9300A4927D /* PBXTargetDependency */ = {
+		ACB889842DE86E2E00F69444 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AC5EBA702D7CD43E00B89DAD /* event_planning_app */;
-			targetProxy = ACFAB8C82DB18B9300A4927D /* PBXContainerItemProxy */;
+			targetProxy = ACB889832DE86E2E00F69444 /* PBXContainerItemProxy */;
+		};
+		ACE7E0F32DE6FDEC00CD99C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ACE7E0EB2DE6FDEC00CD99C7 /* SocialPlanningKit */;
+			targetProxy = ACE7E0F22DE6FDEC00CD99C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -272,6 +388,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QFS7488RTY;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -335,6 +452,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QFS7488RTY;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -364,8 +482,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"event_planning_app/Preview Content\"";
-				DEVELOPMENT_TEAM = QFS7488RTY;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/event_planning_app/Views/widgets/Home",
+					"$(PROJECT_DIR)/event_planning_app",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need access to your location for tracking your position in real-time, even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need access to your location for tracking your position in real-time.";
@@ -374,6 +497,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -381,6 +505,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "programing.event-planning-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -395,8 +522,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"event_planning_app/Preview Content\"";
-				DEVELOPMENT_TEAM = QFS7488RTY;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/event_planning_app/Views/widgets/Home",
+					"$(PROJECT_DIR)/event_planning_app",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need access to your location for tracking your position in real-time, even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need access to your location for tracking your position in real-time.";
@@ -405,6 +537,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -412,22 +545,25 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "programing.event-planning-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		ACFAB8CB2DB18B9300A4927D /* Debug */ = {
+		ACB889862DE86E2E00F69444 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QFS7488RTY;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = programing.appTests;
+				PRODUCT_BUNDLE_IDENTIFIER = programing.SocialPlanningKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -436,21 +572,99 @@
 			};
 			name = Debug;
 		};
-		ACFAB8CC2DB18B9300A4927D /* Release */ = {
+		ACB889872DE86E2E00F69444 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QFS7488RTY;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = programing.appTests;
+				PRODUCT_BUNDLE_IDENTIFIER = programing.SocialPlanningKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/event_planning_app.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/event_planning_app";
+			};
+			name = Release;
+		};
+		ACE7E0F72DE6FDEC00CD99C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = programing.SocialPlanningKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		ACE7E0F82DE6FDEC00CD99C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = programing.SocialPlanningKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -475,11 +689,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ACFAB8CA2DB18B9300A4927D /* Build configuration list for PBXNativeTarget "appTests" */ = {
+		ACB889852DE86E2E00F69444 /* Build configuration list for PBXNativeTarget "SocialPlanningKitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ACFAB8CB2DB18B9300A4927D /* Debug */,
-				ACFAB8CC2DB18B9300A4927D /* Release */,
+				ACB889862DE86E2E00F69444 /* Debug */,
+				ACB889872DE86E2E00F69444 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ACE7E0F62DE6FDEC00CD99C7 /* Build configuration list for PBXNativeTarget "SocialPlanningKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACE7E0F72DE6FDEC00CD99C7 /* Debug */,
+				ACE7E0F82DE6FDEC00CD99C7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -498,30 +721,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AC5EBA832D7CD5A300B89DAD /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		AC5EBA852D7CD5A300B89DAD /* FirebaseAuth */ = {
+		ACE7E0FF2DE7022A00CD99C7 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		AC5EBA872D7CD5A300B89DAD /* FirebaseCore */ = {
+		ACE7E1012DE7023300CD99C7 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		AC5EBA892D7CD5A300B89DAD /* FirebaseDatabase */ = {
+		ACE7E1032DE7024100CD99C7 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
+			productName = FirebaseAnalytics;
 		};
-		AC5EBA8B2D7CD5A300B89DAD /* FirebaseFirestore */ = {
+		ACE7E1052DE7024C00CD99C7 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		ACE7E1072DE7025700CD99C7 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC5EBA822D7CD5A300B89DAD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

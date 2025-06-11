@@ -1,137 +1,238 @@
 import SwiftUI
 import MapKit
-import CoreLocation
-import FirebaseAuth
-import FirebaseFirestore
 
 struct HomeContentView: View {
-    @StateObject private var locationManager = LocationManager.shared
-    @State private var userName: String = "User"
-    @State private var cameraPosition = MapCameraPosition.region(MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 53.9006, longitude: 27.5590), // Минск
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-    ))
-    
-    private var firestoreService = FirestoreService.shared
+    @EnvironmentObject var mapViewModel: MapViewModel // ✅ подключаешь общий
 
     var body: some View {
-        VStack {
-            Map(position: $cameraPosition) {
-                
-                // 📍 **Отображение текущего пользователя**
-                if let location = locationManager.currentLocation {
-                    let userIsNearFriend = isUserNearbyAnyFriend()
+        ZStack(alignment: .bottomTrailing) {
+            VStack {
+                Map(position: $mapViewModel.cameraPosition) {
                     
-                    Annotation(userName, coordinate: location) {
-                        Circle()
-                            .fill(userIsNearFriend ? Color.green : Color.red) // ✅ Теперь красим пользователя в зеленый, если рядом друг
-                            .frame(width: 14, height: 14)
-                            .overlay(
+                    
+                    // Встречи, созданные пользователем — розовые
+                        ForEach(mapViewModel.userCreatedMeetings) { meeting in
+                            Annotation(meeting.title, coordinate: meeting.location) {
                                 Circle()
-                                    .stroke(Color.white, lineWidth: 2)
-                            )
+                                    .fill(Color.pink)
+                                    .frame(width: 10, height: 10)
+                                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                            }
+                        }
+                        
+                        // Встречи, куда вас пригласили и вы приняли — коричневые
+                        ForEach(mapViewModel.acceptedMeetings) { meeting in
+                            Annotation(meeting.title, coordinate: meeting.location) {
+                                Circle()
+                                    .fill(Color.brown)
+                                    .frame(width: 10, height: 10)
+                                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                            }
+                        }
+                    
+                    // Друзья
+                    ForEach(mapViewModel.friendsLocations) { friend in
+                        Annotation(friend.name, coordinate: friend.coordinate) {
+                            ZStack(alignment: .bottomTrailing) {
+                                if let friendImage = mapViewModel.friendAvatars[friend.id] {
+                                    Image(uiImage: friendImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 45, height: 45)
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(mapViewModel.isNearby(friend.coordinate) ? Color.green : Color.blue, lineWidth: 3)
+                                        )
+                                        .shadow(radius: 3)
+                                } else {
+                                    Circle()
+                                        .fill(mapViewModel.isNearby(friend.coordinate) ? Color.green : Color.blue)
+                                        .frame(width: 45, height: 45)
+                                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                                }
+                                
+                                //показываем скорость друга, если > 3 км/ч
+                                if let friendSpeed = mapViewModel.friendsSpeeds[friend.id], friendSpeed > 3.0 {
+                                    Text(String(format: "%.1f км/ч", friendSpeed))
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                        .padding(4)
+                                        .background(Color.black.opacity(0.7))
+                                        .cornerRadius(6)
+                                        .offset(x: 10, y: 10)
+                                }
+                                
+                                // Показываем плашку только если пользователь НЕ рядом с другом
+                                if !mapViewModel.isNearby(friend.coordinate) {
+                                    Text(mapViewModel.timeAtLocationString(for: friend.id))
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                        .padding(4)
+                                        .background(Color.black.opacity(0.7))
+                                        .cornerRadius(6)
+                                        .offset(x: 10, y: 10) // Смещаем так, чтобы центр плашки попал в правый нижний угол иконки
+                                }
+                                
+                            }
+                            
+                        }
+                    }
+                    
+                    // Текущий пользователь
+                    if let userLocation = mapViewModel.currentLocation {
+                        let userIsNearFriend = mapViewModel.isUserNearbyAnyFriend()
+                        Annotation(mapViewModel.userName, coordinate: userLocation) {
+                            if let userImage = mapViewModel.userAvatar {
+                                Image(uiImage: userImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 45, height: 45)
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(userIsNearFriend ? Color.green : Color.red, lineWidth: 3)
+                                    )
+                                    .shadow(radius: 3)
+                                
+                            } else {
+                                Circle()
+                                    .fill(userIsNearFriend ? Color.green : Color.red)
+                                    .frame(width: 45, height: 45)
+                                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                            }
+                        }
                     }
                 }
-
-                // 📍 **Отображение друзей**
-                ForEach(locationManager.friendsLocations) { friend in
-                    Annotation(friend.name, coordinate: friend.coordinate) {
-                        Circle()
-                            .fill(isNearby(friend.coordinate) ? Color.green : Color.blue) // ✅ Зелёный, если в радиусе 16 м
-                            .frame(width: 12, height: 12)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 2)
-                            )
-                    }
-                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(height: 500) // Фиксированная высота карты
-            .cornerRadius(20)
-            .padding()
+            
+            // Время пребывания в месте — маленький черный закругленный квадратик с белым текстом
+            if mapViewModel.currentSpeed > 3.0 {
+                // ✅ Показываем скорость
+                Text(String(format: "%.1f км/ч", mapViewModel.currentSpeed))
+                    .font(.caption2)
+                    .foregroundColor(.white)
+                    .padding(8)
+                    .background(Color.black.opacity(0.7))
+                    .cornerRadius(8)
+                    .padding([.trailing, .bottom], 16)
+            } else if mapViewModel.arrivedAt != nil {
+                // ✅ Показываем время на месте
+                Text(mapViewModel.timeAtLocationString)
+                    .font(.caption2)
+                    .foregroundColor(.white)
+                    .padding(8)
+                    .background(Color.black.opacity(0.7))
+                    .cornerRadius(8)
+                    .padding([.trailing, .bottom], 16)
+            }
+            
         }
         .onAppear {
-            guard let currentUser = Auth.auth().currentUser else { return }
-            
-            // Загружаем имя пользователя
-            firestoreService.observeUserNameChanges(uid: currentUser.uid) { updatedName in
-                self.userName = updatedName
-            }
-            
-            // Начинаем обновление местоположения и загрузку друзей
-            locationManager.startLocationUpdates()
-            locationManager.loadFriendsLocations()
+            mapViewModel.start()
+            mapViewModel.loadMeetings()
         }
-    }
-    
-    /// **Определяет, находится ли друг в радиусе 16 метров**
-    private func isNearby(_ friendLocation: CLLocationCoordinate2D) -> Bool {
-        guard let userLocation = locationManager.currentLocation else { return false }
-        
-        let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
-        let friendCLLocation = CLLocation(latitude: friendLocation.latitude, longitude: friendLocation.longitude)
-
-        let distance = userCLLocation.distance(from: friendCLLocation) // Получаем расстояние в метрах
-        print("📏 Расстояние до друга \(distance) м")
-
-        return distance <= 30 // Если друг ближе 16 метров — окрашиваем в зелёный
-    }
-    
-    /// **Проверяет, есть ли рядом хотя бы один друг**
-    private func isUserNearbyAnyFriend() -> Bool {
-        for friend in locationManager.friendsLocations {
-            if isNearby(friend.coordinate) {
-                return true
-            }
+        .onDisappear {
+            mapViewModel.stop()
         }
-        return false
     }
 }
 
 
 
+
 /*import SwiftUI
  import MapKit
- import CoreLocation
- import FirebaseAuth
- import FirebaseFirestore
-
+ 
  struct HomeContentView: View {
-     @StateObject private var locationManager = LocationManager.shared
-     @State private var userName: String = "User"
-     @State private var cameraPosition = MapCameraPosition.region(MKCoordinateRegion(
-         center: CLLocationCoordinate2D(latitude: 53.9006, longitude: 27.5590), // Минск
-         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-     ))
-     private var firestoreService = FirestoreService.shared
-     var body: some View {
-         VStack {
-             Map(position: $cameraPosition) {
-                 // Аннотация для текущего местоположения
-                 if let location = locationManager.currentLocation {
-                     Annotation(userName, coordinate: location) {
-                         Circle()
-                             .fill(Color.red)
-                             .frame(width: 12, height: 12)
-                             .overlay(
-                                 Circle()
-                                     .stroke(Color.white, lineWidth: 2)
-                             )
-                     }
-                 }
-             }
-             .frame(height: 500) // Фиксированная высота карты
-             .cornerRadius(20)
-             .padding()
-         }
-         .onAppear {
-             guard let currentUser = Auth.auth().currentUser else { return }
-                        firestoreService.observeUserNameChanges(uid: currentUser.uid) { updatedName in
-                            self.userName = updatedName // Обновляем имя, если оно изменилось в Firestore
-                        }
-             locationManager.startLocationUpdates()
-             print("Attempting to load 'default.csv'...")
-         }
-     }
+ @StateObject private var mapViewModel = MapViewModel()
+ 
+ var body: some View {
+ ZStack(alignment: .bottomTrailing) {
+ VStack {
+ Map(position: $mapViewModel.cameraPosition) {
+ 
+ // Друзья
+ ForEach(mapViewModel.friendsLocations) { friend in
+ Annotation(friend.name, coordinate: friend.coordinate) {
+ if let friendImage = mapViewModel.friendAvatars[friend.id] {
+ Image(uiImage: friendImage)
+ .resizable()
+ .scaledToFill()
+ .frame(width: 40, height: 40)
+ .cornerRadius(10)
+ .overlay(
+ RoundedRectangle(cornerRadius: 10)
+ .stroke(mapViewModel.isNearby(friend.coordinate) ? Color.green : Color.blue, lineWidth: 3)
+ )
+ .shadow(radius: 3)
+ } else {
+ Circle()
+ .fill(mapViewModel.isNearby(friend.coordinate) ? Color.green : Color.blue)
+ .frame(width: 12, height: 12)
+ .overlay(Circle().stroke(Color.white, lineWidth: 2))
  }
-*/
+ }
+ }
+ 
+ // Текущий пользователь
+ if let userLocation = mapViewModel.currentLocation {
+ let userIsNearFriend = mapViewModel.isUserNearbyAnyFriend()
+ Annotation(mapViewModel.userName, coordinate: userLocation) {
+ if let userImage = mapViewModel.userAvatar {
+ Image(uiImage: userImage)
+ .resizable()
+ .scaledToFill()
+ .frame(width: 40, height: 40)
+ .cornerRadius(10)
+ .overlay(
+ RoundedRectangle(cornerRadius: 10)
+ .stroke(userIsNearFriend ? Color.green : Color.red, lineWidth: 3)
+ )
+ .shadow(radius: 3)
+ 
+ } else {
+ Circle()
+ .fill(userIsNearFriend ? Color.green : Color.red)
+ .frame(width: 40, height: 40)
+ .overlay(Circle().stroke(Color.white, lineWidth: 2))
+ }
+ }
+ }
+ }
+ .frame(maxWidth: .infinity, maxHeight: .infinity)
+ }
+ 
+ // Время пребывания в месте — маленький черный закругленный квадратик с белым текстом
+ if mapViewModel.currentSpeed > 3.0 {
+ // ✅ Показываем скорость
+ Text(String(format: "%.1f км/ч", mapViewModel.currentSpeed))
+ .font(.caption2)
+ .foregroundColor(.white)
+ .padding(8)
+ .background(Color.black.opacity(0.7))
+ .cornerRadius(8)
+ .padding([.trailing, .bottom], 16)
+ } else if mapViewModel.arrivedAt != nil {
+ // ✅ Показываем время на месте
+ Text(mapViewModel.timeAtLocationString)
+ .font(.caption2)
+ .foregroundColor(.white)
+ .padding(8)
+ .background(Color.black.opacity(0.7))
+ .cornerRadius(8)
+ .padding([.trailing, .bottom], 16)
+ }
+ 
+ }
+ .onAppear {
+ mapViewModel.start()
+ }
+ .onDisappear {
+ mapViewModel.stop()
+ }
+ }
+ }
+ 
+ */

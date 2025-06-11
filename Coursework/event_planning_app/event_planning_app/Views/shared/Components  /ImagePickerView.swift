@@ -1,45 +1,44 @@
-//
-//  ImagePickerView.swift
-//  event_planning_app
-//
-//  Created by Artem on 6.03.25.
-//
-
-import Foundation
 import SwiftUI
+import UIKit
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
+    var completion: (UIImage?) -> Void
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator(selectedImage: $selectedImage)
+        return Coordinator(completion: completion)
     }
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
-        picker.sourceType = .photoLibrary // Источник - фотогалерея
+        picker.sourceType = .photoLibrary
         return picker
     }
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        @Binding var selectedImage: UIImage?
+        let completion: (UIImage?) -> Void
 
-        init(selectedImage: Binding<UIImage?>) {
-            _selectedImage = selectedImage
+        init(completion: @escaping (UIImage?) -> Void) {
+            self.completion = completion
         }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let selectedImage = info[.originalImage] as? UIImage {
-                self.selectedImage = selectedImage
+            var selectedImage: UIImage? = nil
+            if let image = info[.originalImage] as? UIImage {
+                selectedImage = image
             }
-            picker.dismiss(animated: true)
+            picker.dismiss(animated: true) {
+                self.completion(selectedImage)
+            }
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
+            picker.dismiss(animated: true) {
+                self.completion(nil)
+            }
         }
     }
 }
+
